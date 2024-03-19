@@ -150,7 +150,14 @@ api.add_resource(LoanApplicationsById, "/loan_applications/<int:id>")
 class Tasks(Resource):
     # Get all tasks - WORKS
     def get(self):
-        tasks = [task.to_dict() for task in Task.query.all()]
+        tasks = [
+            {
+            "id": task.id,
+            "name": task.name,
+            "description": task.description
+            }
+            for task in Task.query.all()
+        ]
         return make_response(tasks, 200)
 
     # Create a new task - WORKS
