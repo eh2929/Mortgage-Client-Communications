@@ -6,18 +6,13 @@
 from flask import Flask, make_response, request, session
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from models import User, Loan_Application, Task, Assigned_Task, Comment
 
 # Local imports
 from config import app, db, api
 
 # Add your model imports
-from models import (
-    User,
-    Loan_Application,
-    Task,
-    Assigned_Task,
-    Comment,
-)
+
 
 # Initialize Api
 api = Api(app)
@@ -68,7 +63,7 @@ class LoanApplications(Resource):
         ]
         return make_response(loan_applications, 200)
 
-    # Create a new loan application - WORKS 
+    # Create a new loan application - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -95,7 +90,7 @@ class Tasks(Resource):
         tasks = [task.to_dict() for task in Task.query.all()]
         return make_response(tasks, 200)
 
-    # Create a new task - WORKS 
+    # Create a new task - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -124,7 +119,7 @@ class AssignedTasks(Resource):
         ]
         return make_response(assigned_tasks, 200)
 
-    # Create a new assigned task - WORKS 
+    # Create a new assigned task - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -146,12 +141,12 @@ class AssignedTasksById(Resource):
 
 # Comment class view
 class Comments(Resource):
-    # Get all comments - WORKS 
+    # Get all comments - WORKS
     def get(self):
         comments = [comment.to_dict() for comment in Comment.query.all()]
         return make_response(comments, 200)
 
-    # Create a new comment - WORKS 
+    # Create a new comment - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -165,7 +160,5 @@ class Comments(Resource):
 
 api.add_resource(Comments, "/comments")
 
-
-# Comment by ID view
-class CommentsById(Resource):
-    pass
+if __name__ == "__main__":
+    app.run(port=5555, debug=True)

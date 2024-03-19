@@ -3,7 +3,6 @@ from sqlalchemy.orm import relationship, validates, backref
 from config import db
 
 
-# Define User Model
 class User(db.Model, SerializerMixin):
     __tablename__ = "users"
 
@@ -15,76 +14,52 @@ class User(db.Model, SerializerMixin):
     password = db.Column(db.String)
     role = db.Column(db.String)
 
-    # Define relationships
-    # A user can have many loan applications
-    # There are 3 user roles: 'borrower', 'loan_officer', 'real_estate_agent'
+    # User (Borrower) has many loan applications
     borrower_loans = db.relationship(
         "Loan_Application",
-        back_populates="user",
+        back_populates="borrower",
         foreign_keys="Loan_Application.borrower_id",
     )
-    loan_officer_loans = db.relationship(
-        "Loan_Application",
-        back_populates="user",
-        foreign_keys="Loan_Application.loan_officer_id",
-    )
-    agent_loans = db.relationship(
-        "Loan_Application",
-        back_populates="user",
-        foreign_keys="Loan_Application.real_estate_agent_id",
-    )
-
-    # A user can have many comments
-
-    # Define Serialization Rules
+    # User has many comments
+    comments = db.relationship("Comment", back_populates="user")
     serialize_rules = (
-        "-borrower_loans.user",
-        "-loan_officer_loans.user",
-        "-agent_loans.user",
+        "-comments.user",
+        "-comments.loan_application",
+        "-borrower_loans.borrower",
+        "-borrower_loans.comments",
+        "-borrower_loans.assigned_tasks",
     )
-    # Define Validation Rules
 
 
-# Define loan_application model
 class Loan_Application(db.Model, SerializerMixin):
     __tablename__ = "loan_applications"
 
     id = db.Column(db.Integer, primary_key=True)
     property_address = db.Column(db.String, unique=True)
-    # Foreign Keys
     borrower_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     loan_officer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     real_estate_agent_id = db.Column(db.Integer, db.ForeignKey("users.id"))
 
-    # Define relationships
-
-    # A loan application can have many assigned tasks
-
-    # A loan application can have many comments
-
-    # A loan application can have many users, each with a different role
-    user = db.relationship(
-        "User",
-        back_populates="borrower_loans",
-        foreign_keys="Loan_Application.borrower_id",
-    )
-    user = db.relationship(
-        "User",
-        back_populates="loan_officer_loans",
-        foreign_keys="Loan_Application.loan_officer_id",
-    )
-    user = db.relationship(
-        "User",
-        back_populates="agent_loans",
-        foreign_keys="Loan_Application.real_estate_agent_id",
+    # Loan Application belongs to a borrower
+    borrower = db.relationship(
+        "User", back_populates="borrower_loans", foreign_keys=[borrower_id]
     )
 
-    # Define Serialization Rules
+    # Loan Application has many comments
+    comments = db.relationship("Comment", back_populates="loan_application")
 
-    # Define Validation Rules
+    # Loan Application has many assigned tasks
+    assigned_tasks = db.relationship("Assigned_Task", back_populates="loan_application")
+
+    serialize_rules = (
+        "-comments.loan_application",
+        "-comments.user",
+        "-assigned_tasks.loan_application",
+        "-borrower.borrower_loans",
+        "-borrower.comments",
+    )
 
 
-# Define Tasks model
 class Task(db.Model, SerializerMixin):
     __tablename__ = "tasks"
 
@@ -92,15 +67,11 @@ class Task(db.Model, SerializerMixin):
     name = db.Column(db.String)
     description = db.Column(db.String)
 
-    # Define relationships
-    # A task can have many assigned tasks
-
-    # Define Serialization Rules
-
-    # Define Validation Rules
+    # Task has many assigned tasks
+    assigned_tasks = db.relationship("Assigned_Task", back_populates="task")
+    serialize_rules = ("-assigned_tasks.task",)
 
 
-# Define Assigned_Tasks model
 class Assigned_Task(db.Model, SerializerMixin):
     __tablename__ = "assigned_tasks"
 
@@ -108,38 +79,38 @@ class Assigned_Task(db.Model, SerializerMixin):
     assigned_date = db.Column(db.DateTime)
     due_date = db.Column(db.DateTime)
     is_completed = db.Column(db.Boolean)
-
-    # Foreign Keys
     task_id = db.Column(db.Integer, db.ForeignKey("tasks.id"))
     loan_application_id = db.Column(db.Integer, db.ForeignKey("loan_applications.id"))
 
-    # Define relationships
-    # A loan application can have many assigned tasks
+    # Assigned Task belongs to a task
+    task = db.relationship("Task", back_populates="assigned_tasks")
+    serialize_rules = ("-task.assigned_tasks",)
 
-    # An assigned task can have one task and one loan application
+    # Many Assigned Tasks belong to a loan application
+    loan_application = db.relationship(
+        "Loan_Application", back_populates="assigned_tasks"
+    )
 
-    # Define Serialization Rules
-
-    # Define Validation Rules
+    serialize_rules = ("-loan_application.comments", "-loan_application.assigned_tasks")
 
 
-# Define Comments model
 class Comment(db.Model, SerializerMixin):
     __tablename__ = "comments"
 
     id = db.Column(db.Integer, primary_key=True)
     comment = db.Column(db.String)
     date = db.Column(db.DateTime)
-
-    # Foreign Keys
     user_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     loan_application_id = db.Column(db.Integer, db.ForeignKey("loan_applications.id"))
 
-    # Define relationships
-    # A comment can have one user
+    # Comment belongs to a user
+    user = db.relationship("User", back_populates="comments")
 
-    # A comment can have one loan application
-
-    # Define Serialization Rules
-
-    # Define Validation Rules
+    # Many comments belong to a loan application
+    loan_application = db.relationship("Loan_Application", back_populates="comments")
+    serialize_rules = (
+        "-user.comments",
+        "-user.borrower_loans",
+        "-loan_application.comments",
+        "-loan_application.assigned_tasks",
+    )
