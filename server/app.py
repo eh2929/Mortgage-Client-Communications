@@ -51,14 +51,14 @@ api.add_resource(Users, "/users")
 
 # User by ID view - works
 class UsersById(Resource):
-    def get(self, id): # tested - works
+    def get(self, id):  # tested - works
         user = User.query.filter(User.id == id).first()
         if user:
             return make_response(user.to_dict(), 200)
         else:
             return make_response({"error": "User not found"}, 404)
 
-    def delete(self, id): # tested - works
+    def delete(self, id):  # tested - works
         user = User.query.filter(User.id == id).first()
         if not user:
             return make_response({"error": "User not found"}, 404)
@@ -66,7 +66,7 @@ class UsersById(Resource):
         db.session.commit()
         return make_response({"message": "User deleted successfully"}, 200)
 
-    def patch(self, id): # tested - works
+    def patch(self, id):  # tested - works
         user = User.query.filter(User.id == id).first()
         req_data = request.get_json()
         if not user:
@@ -78,7 +78,8 @@ class UsersById(Resource):
             return make_response({"error": "Invalid data"}, 400)
         db.session.commit()
         return make_response(user.to_dict(), 200)
-    
+
+
 api.add_resource(UsersById, "/users/<int:id>")
 
 
@@ -87,7 +88,12 @@ class LoanApplications(Resource):
     # Get all loan applications - WORKS
     def get(self):
         loan_applications = [
-            loan_app.to_dict() for loan_app in Loan_Application.query.all()
+            {
+                "id": loan_app.id,
+                "property_address": loan_app.property_address,
+                "borrower_name": loan_app.borrower.name,
+            }
+            for loan_app in Loan_Application.query.all()
         ]
         return make_response(loan_applications, 200)
 
@@ -108,22 +114,22 @@ api.add_resource(LoanApplications, "/loan_applications")
 
 # Loan_Application by ID view
 class LoanApplicationsById(Resource):
-    def get(self, id): # tested - works
+    def get(self, id):  # tested - works
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         if loan_app:
             return make_response(loan_app.to_dict(), 200)
         else:
             return make_response({"error": "Loan Application not found"}, 404)
-        
-    def delete(self, id): # tested - works
+
+    def delete(self, id):  # tested - works
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         if not loan_app:
             return make_response({"error": "Loan Application not found"}, 404)
         db.session.delete(loan_app)
         db.session.commit()
         return make_response({"message": "Loan Application deleted successfully"}, 200)
-    
-    def patch(self, id): # tested - works
+
+    def patch(self, id):  # tested - works
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         req_data = request.get_json()
         if not loan_app:
@@ -135,7 +141,8 @@ class LoanApplicationsById(Resource):
             return make_response({"error": "Invalid data"}, 400)
         db.session.commit()
         return make_response(loan_app.to_dict(), 200)
-    
+
+
 api.add_resource(LoanApplicationsById, "/loan_applications/<int:id>")
 
 
@@ -163,22 +170,22 @@ api.add_resource(Tasks, "/tasks")
 
 # Task by ID view
 class TasksById(Resource):
-    def get(self, id): # tested - works
+    def get(self, id):  # tested - works
         task = Task.query.filter(Task.id == id).first()
         if task:
             return make_response(task.to_dict(), 200)
         else:
             return make_response({"error": "Task not found"}, 404)
-        
-    def delete(self, id): # tested - works
+
+    def delete(self, id):  # tested - works
         task = Task.query.filter(Task.id == id).first()
         if not task:
             return make_response({"error": "Task not found"}, 404)
         db.session.delete(task)
         db.session.commit()
         return make_response({"message": "Task deleted successfully"}, 200)
-    
-    def patch(self, id): # tested - works
+
+    def patch(self, id):  # tested - works
         task = Task.query.filter(Task.id == id).first()
         req_data = request.get_json()
         if not task:
@@ -190,7 +197,8 @@ class TasksById(Resource):
             return make_response({"error": "Invalid data"}, 400)
         db.session.commit()
         return make_response(task.to_dict(), 200)
-    
+
+
 api.add_resource(TasksById, "/tasks/<int:id>")
 
 
@@ -220,22 +228,22 @@ api.add_resource(AssignedTasks, "/assigned_tasks")
 
 # Assigned_Task by ID view
 class AssignedTasksById(Resource):
-    def get(self, id): # tested - works
+    def get(self, id):  # tested - works
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         if assigned_task:
             return make_response(assigned_task.to_dict(), 200)
         else:
             return make_response({"error": "Assigned Task not found"}, 404)
-        
-    def delete(self, id): # tested - works
+
+    def delete(self, id):  # tested - works
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         if not assigned_task:
             return make_response({"error": "Assigned Task not found"}, 404)
         db.session.delete(assigned_task)
         db.session.commit()
         return make_response({"message": "Assigned Task deleted successfully"}, 200)
-    
-    def patch(self, id): # tested - works
+
+    def patch(self, id):  # tested - works
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         req_data = request.get_json()
         if not assigned_task:
@@ -247,7 +255,8 @@ class AssignedTasksById(Resource):
             return make_response({"error": "Invalid data"}, 400)
         db.session.commit()
         return make_response(assigned_task.to_dict(), 200)
-    
+
+
 api.add_resource(AssignedTasksById, "/assigned_tasks/<int:id>")
 
 
@@ -272,24 +281,25 @@ class Comments(Resource):
 
 api.add_resource(Comments, "/comments")
 
+
 # Comments by ID view
 class CommentsById(Resource):
-    def get(self, id): # tested - works
+    def get(self, id):  # tested - works
         comment = Comment.query.filter(Comment.id == id).first()
         if comment:
             return make_response(comment.to_dict(), 200)
         else:
             return make_response({"error": "Comment not found"}, 404)
-        
-    def delete(self, id): # tested - works
+
+    def delete(self, id):  # tested - works
         comment = Comment.query.filter(Comment.id == id).first()
         if not comment:
             return make_response({"error": "Comment not found"}, 404)
         db.session.delete(comment)
         db.session.commit()
         return make_response({"message": "Comment deleted successfully"}, 200)
-    
-    def patch(self, id): # tested - works
+
+    def patch(self, id):  # tested - works
         comment = Comment.query.filter(Comment.id == id).first()
         req_data = request.get_json()
         if not comment:
@@ -301,7 +311,8 @@ class CommentsById(Resource):
             return make_response({"error": "Invalid data"}, 400)
         db.session.commit()
         return make_response(comment.to_dict(), 200)
-    
+
+
 api.add_resource(CommentsById, "/comments/<int:id>")
 
 if __name__ == "__main__":
