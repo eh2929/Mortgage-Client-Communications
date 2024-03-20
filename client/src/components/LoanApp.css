@@ -1,0 +1,51 @@
+/* LoanApps.css */
+
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f9f9f9;
+}
+
+.loan-apps-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.loan-app {
+  background-color: white;
+  padding: 20px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+}
+
+.loan-app h2 {
+  margin: 0;
+  color: #333;
+}
+
+.loan-app p {
+  margin: 10px 0;
+  color: #666;
+}
+
+.loan-app button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #46379c;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.create-loan-app-button {
+  display: inline-block;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 4px;
+  background-color: #46379c;
+  color: white;
+  cursor: pointer;
+  text-decoration: none;
+}

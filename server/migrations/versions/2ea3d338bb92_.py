@@ -1,8 +1,8 @@
 """empty message
 
-Revision ID: f5ce52ae1534
+Revision ID: 2ea3d338bb92
 Revises: 
-Create Date: 2024-03-19 20:50:57.426745
+Create Date: 2024-03-20 16:45:02.217910
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'f5ce52ae1534'
+revision = '2ea3d338bb92'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -30,7 +30,7 @@ def upgrade():
     sa.Column('email', sa.String(), nullable=True),
     sa.Column('phone_number', sa.String(), nullable=True),
     sa.Column('username', sa.String(), nullable=True),
-    sa.Column('_password_hash', sa.String(), nullable=True),
+    sa.Column('password_hash', sa.String(), nullable=True),
     sa.Column('role', sa.String(), nullable=True),
     sa.PrimaryKeyConstraint('id'),
     sa.UniqueConstraint('email'),
@@ -46,8 +46,7 @@ def upgrade():
     sa.ForeignKeyConstraint(['borrower_id'], ['users.id'], name=op.f('fk_loan_applications_borrower_id_users')),
     sa.ForeignKeyConstraint(['loan_officer_id'], ['users.id'], name=op.f('fk_loan_applications_loan_officer_id_users')),
     sa.ForeignKeyConstraint(['real_estate_agent_id'], ['users.id'], name=op.f('fk_loan_applications_real_estate_agent_id_users')),
-    sa.PrimaryKeyConstraint('id'),
-    sa.UniqueConstraint('property_address')
+    sa.PrimaryKeyConstraint('id')
     )
     op.create_table('assigned_tasks',
     sa.Column('id', sa.Integer(), nullable=False),

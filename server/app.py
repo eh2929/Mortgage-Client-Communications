@@ -6,6 +6,8 @@
 from flask import Flask, abort, jsonify, make_response, request, session
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from flask_login import current_user, LoginManager
+from sqlalchemy.orm import joinedload
 from models import User, Loan_Application, Task, Assigned_Task, Comment
 from werkzeug.exceptions import NotFound, Unauthorized
 
@@ -15,6 +17,14 @@ from config import app, db, api
 # Initialize Api
 api = Api(app)
 
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 
 @app.route("/")
 def index():
@@ -22,14 +32,19 @@ def index():
 
 
 # @app.before_request
-def check_if_logged_in():
-    open_access_list = ["signup", "login", "logout", "authorized"]
-
-    if request.endpoint not in open_access_list and not session.get("user_id"):
-        return make_response(
-            {"error:": "Unauthorized: you must be logged in to access this resource"},
-            401,
-        )
+# def check_if_logged_in():
+#     open_access_list = ["", "signup", "login", "logout", "authorized"]
+#     if request.endpoint not in open_access_list:
+#         if (
+#             "user_id" not in session
+#             or db.session.get(User, session["user_id"]).role != "admin"
+#         ):
+#             return make_response(
+#                 {
+#                     "error:": "Unauthorized: you must be logged in to access this resource"
+#                 },
+#                 401,
+#             )
 
 
 class CheckSession(Resource):
@@ -61,7 +76,7 @@ class Users(Resource):
                 "email": user.email,
                 "phone_number": user.phone_number,
                 "username": user.username,
-                "password": user._password_hash,
+                "password": user.password_hash,
                 "role": user.role,
             }
             for user in User.query.all()
@@ -76,6 +91,9 @@ class Users(Resource):
                 name=req_data["name"],
                 email=req_data["email"],
                 password=req_data["password"],
+                phone_number=req_data["phone"],
+                username=req_data["username"],
+                role=req_data["role"],
             )
         except ValueError as e:
             return make_response({"error": ["validation errors"]}, 400)
@@ -92,14 +110,17 @@ api.add_resource(Users, "/users", "/signup")
 # login
 @app.route("/login", methods=["POST"])
 def login():
-    user = User.query.filter_by(name=request.get_json()["name"]).first()
-    if user and user.authenticate(request.get_json()["password"]):
-        session["user_id"] = (
-            user.id
-        )  # this is the line that sets the session and logs in the user
-        return make_response(user.to_dict(), 200)
-    else:
-        raise Unauthorized("Invalid credentials")
+    request_data = request.get_json()
+    print("Request data: ", request_data)  # log the request data
+    user = User.query.filter_by(username=request.get_json()["username"]).first()
+    print("User: ", user)  # log the user
+    if user:
+        is_authenticated = user.authenticate(request.get_json()["password"])
+        print("Is authenticated:", is_authenticated)  # log the authentication result
+        if is_authenticated:
+            session["user_id"] = user.id
+            return make_response(user.to_dict(), 200)
+    raise Unauthorized("Invalid credentials")
 
 
 # route that checks to see if the User is currently in sessions
@@ -153,17 +174,40 @@ api.add_resource(UsersById, "/users/<int:id>")
 
 # Loan_Application class view
 class LoanApplications(Resource):
-    # Get all loan applications - WORKS
+    # Get all loan applications
     def get(self):
+        # if current_user.is_authenticated:
+        #     if current_user.role == "admin":
+        loan_applications_query = Loan_Application.query.all()
+        # else:
+        #     loan_applications_query = Loan_Application.query.filter_by(
+        #         borrower_id=current_user.id
+        #     ).all()
+
         loan_applications = [
             {
                 "id": loan_app.id,
                 "property_address": loan_app.property_address,
-                "borrower_name": loan_app.borrower.name,
+                "borrower_name": (
+                    loan_app.borrower.name if loan_app.borrower else None
+                ),
+                "assigned_loan_officer": (
+                    db.session.get(User, loan_app.loan_officer_id).name
+                    if loan_app.loan_officer_id
+                    else None
+                ),
+                "assigned_real_estate_agent": (
+                    db.session.get(User, loan_app.real_estate_agent_id).name
+                    if loan_app.real_estate_agent_id
+                    else None
+                ),
             }
-            for loan_app in Loan_Application.query.all()
+            for loan_app in loan_applications_query
         ]
         return make_response(loan_applications, 200)
+        # else:
+        #     pass
+        # return make_response({"error": "User not authenticated"}, 401)
 
     # Create a new loan application - WORKS
     def post(self):
@@ -277,14 +321,19 @@ api.add_resource(TasksById, "/tasks/<int:id>")
 class AssignedTasks(Resource):
     # Get all assigned tasks - WORKS
     def get(self):
-        assigned_tasks = [
-            assigned_task.to_dict() for assigned_task in Assigned_Task.query.all()
-        ]
-        return make_response(assigned_tasks, 200)
+        assigned_tasks = Assigned_Task.query.options(
+            joinedload(Assigned_Task.task)
+        ).all()
+        return make_response(
+            [assigned_task.serialize() for assigned_task in assigned_tasks], 200
+        )
 
     # Create a new assigned task - WORKS
+
     def post(self):
         req_data = request.get_json()
+        req_data.pop("name", None)
+        req_data.pop("description", None)
         try:
             new_assigned_task = Assigned_Task(**req_data)
         except ValueError as e:
@@ -385,6 +434,26 @@ class CommentsById(Resource):
 
 
 api.add_resource(CommentsById, "/comments/<int:id>")
+
+
+# Create admin user
+def create_admin_user():
+    with app.app_context():
+        admin = User.query.filter_by(username="admin").first()
+        if not admin:
+            admin = User(
+                name="admin",
+                email="admin@example.com",
+                password="password",
+                phone_number="1234567890",
+                username="admin",
+                role="admin",
+            )
+            db.session.add(admin)
+            db.session.commit()
+
+
+create_admin_user()
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

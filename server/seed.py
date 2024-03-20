@@ -1,6 +1,7 @@
 from models import User, Loan_Application, Task, Assigned_Task, Comment
 from config import db, Bcrypt, app
 from datetime import datetime, timedelta
+from werkzeug.security import generate_password_hash
 
 bcrypt = Bcrypt()
 
@@ -9,6 +10,9 @@ def seed_data():
     # Clear existing data
     db.drop_all()
     db.create_all()
+
+    # Print out the User class
+    print(User)
 
     # Create users
     borrowers = [
@@ -23,7 +27,8 @@ def seed_data():
     ]
 
     for borrower in borrowers:
-        borrower.set_password("password123")
+        print(borrower)
+        borrower.password = generate_password_hash("password123")
 
     loan_officer = User(
         name="Loan Officer",
@@ -32,7 +37,7 @@ def seed_data():
         username="loanofficer",
         role="loan officer",
     )
-    loan_officer.set_password("password123")
+    loan_officer.password = generate_password_hash("password123")
 
     real_estate_agent = User(
         name="Real Estate Agent",
@@ -41,7 +46,7 @@ def seed_data():
         username="realestateagent",
         role="real estate agent",
     )
-    real_estate_agent.set_password("password123")
+    real_estate_agent.password = generate_password_hash("password123")
 
     db.session.add_all(borrowers)
     db.session.add(loan_officer)

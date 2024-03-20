@@ -1,0 +1,17 @@
+/* Header.css */
+.header {
+  background-color: #9e9696; /* Set background color for the header */
+  padding: 10px; /* Add padding to the header */
+  display: flex; /* Use flexbox to align items */
+  justify-content: space-between; /* Space elements evenly */
+  align-items: center; /* Align items vertically */
+}
+
+.logo-container {
+  flex-shrink: 0; /* Prevent the logo container from shrinking */
+}
+
+.logo {
+  height: auto; /* Allow the height to adjust based on the width */
+  max-width: 100%; /* Limit the maximum width of the logo to its container */
+}

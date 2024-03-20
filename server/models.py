@@ -2,7 +2,8 @@ from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import relationship, validates, backref
 from config import db, bcrypt
 from sqlalchemy.ext.hybrid import hybrid_property
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask import jsonify
 
 
 class User(db.Model, SerializerMixin):
@@ -13,7 +14,7 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True)
     phone_number = db.Column(db.String, unique=True)
     username = db.Column(db.String, unique=True)
-    _password_hash = db.Column(db.String)
+    password_hash = db.Column(db.String)
     role = db.Column(db.String)
 
     @property
@@ -22,7 +23,10 @@ class User(db.Model, SerializerMixin):
 
     @password.setter
     def password(self, password):
-        self._password_hash = generate_password_hash(password)
+        self.password_hash = generate_password_hash(password)
+
+    def authenticate(self, password):
+        return check_password_hash(self.password_hash, password)
 
     # this prevents that Exception being raised everytime we try to call the .to_dict() method in a request that returns information from users
     serialize_rules = ("-password_hash",)
@@ -48,7 +52,7 @@ class Loan_Application(db.Model, SerializerMixin):
     __tablename__ = "loan_applications"
 
     id = db.Column(db.Integer, primary_key=True)
-    property_address = db.Column(db.String, unique=True)
+    property_address = db.Column(db.String)
     borrower_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     loan_officer_id = db.Column(db.Integer, db.ForeignKey("users.id"))
     real_estate_agent_id = db.Column(db.Integer, db.ForeignKey("users.id"))
@@ -63,6 +67,10 @@ class Loan_Application(db.Model, SerializerMixin):
 
     # Loan Application has many assigned tasks
     assigned_tasks = db.relationship("Assigned_Task", back_populates="loan_application")
+
+    @property
+    def borrower_name(self):
+        return self.borrower.name
 
     serialize_rules = (
         "-comments.loan_application",
@@ -84,6 +92,13 @@ class Task(db.Model, SerializerMixin):
     assigned_tasks = db.relationship("Assigned_Task", back_populates="task")
     serialize_rules = ("-assigned_tasks.task",)
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+        }
+
 
 class Assigned_Task(db.Model, SerializerMixin):
     __tablename__ = "assigned_tasks"
@@ -97,14 +112,22 @@ class Assigned_Task(db.Model, SerializerMixin):
 
     # Assigned Task belongs to a task
     task = db.relationship("Task", back_populates="assigned_tasks")
-    serialize_rules = ("-task.assigned_tasks",)
 
     # Many Assigned Tasks belong to a loan application
     loan_application = db.relationship(
         "Loan_Application", back_populates="assigned_tasks"
     )
 
-    serialize_rules = ("-loan_application.comments", "-loan_application.assigned_tasks")
+    serialize_rules = (
+        "-loan_application.comments",
+        "-loan_application.assigned_tasks",
+        "-task.assigned_tasks",
+    )
+
+    def serialize(self):
+        data = SerializerMixin.to_dict(self)
+        data["task"] = self.task.serialize() if self.task else None
+        return data
 
 
 class Comment(db.Model, SerializerMixin):
