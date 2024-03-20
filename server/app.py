@@ -3,27 +3,50 @@
 # Standard library imports
 
 # Remote library imports
-from flask import Flask, make_response, request, session
+from flask import Flask, abort, jsonify, make_response, request, session
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
 from models import User, Loan_Application, Task, Assigned_Task, Comment
+from werkzeug.exceptions import NotFound, Unauthorized
 
 # Local imports
 from config import app, db, api
 
-# Add your model imports
-
-
 # Initialize Api
 api = Api(app)
 
-# Views go here!
 
-
-# base view
 @app.route("/")
 def index():
     return "<h1>Project Server</h1>"
+
+
+# @app.before_request
+def check_if_logged_in():
+    open_access_list = ["signup", "login", "logout", "authorized"]
+
+    if request.endpoint not in open_access_list and not session.get("user_id"):
+        return make_response(
+            {"error:": "Unauthorized: you must be logged in to access this resource"},
+            401,
+        )
+
+
+class CheckSession(Resource):
+    def get(self):
+        user = User.query.filter(User.id == session.get("user_id")).first()
+        if not user:
+            return make_response(
+                {
+                    "error:": "Unauthorized: you must be logged in to access this resource"
+                },
+                401,
+            )
+        else:
+            return make_response(user.to_dict(), 200)
+
+
+api.add_resource(CheckSession, "/check_session", endpoint="check_session")
 
 
 # User class view
@@ -31,22 +54,67 @@ class Users(Resource):
 
     # Get all users - works
     def get(self):
-        users = [user.to_dict() for user in User.query.all()]
+        users = [
+            {
+                "id": user.id,
+                "name": user.name,
+                "email": user.email,
+                "phone_number": user.phone_number,
+                "username": user.username,
+                "password": user._password_hash,
+                "role": user.role,
+            }
+            for user in User.query.all()
+        ]
         return make_response(users, 200)
 
     # Create a new user - works
     def post(self):
         req_data = request.get_json()
         try:
-            new_user = User(**req_data)
+            new_user = User(
+                name=req_data["name"],
+                email=req_data["email"],
+                password=req_data["password"],
+            )
         except ValueError as e:
             return make_response({"error": ["validation errors"]}, 400)
         db.session.add(new_user)
         db.session.commit()
+        # this is the line that sets the session and logs in the user
+        session["user_id"] = new_user.id
         return make_response(new_user.to_dict(), 201)
 
 
-api.add_resource(Users, "/users")
+api.add_resource(Users, "/users", "/signup")
+
+
+# login
+@app.route("/login", methods=["POST"])
+def login():
+    user = User.query.filter_by(name=request.get_json()["name"]).first()
+    if user and user.authenticate(request.get_json()["password"]):
+        session["user_id"] = (
+            user.id
+        )  # this is the line that sets the session and logs in the user
+        return make_response(user.to_dict(), 200)
+    else:
+        raise Unauthorized("Invalid credentials")
+
+
+# route that checks to see if the User is currently in sessions
+def authorized():
+    user = User.query.filter_by(id=session.get("user_id")).first()
+    if not user:
+        raise Unauthorized("Invalid credentials")
+    return make_response(user.to_dict(), 200)
+
+
+# logout
+@app.route("/logout", methods=["DELETE"])
+def logout():
+    session.clear()
+    return make_response({}, 204)
 
 
 # User by ID view - works
@@ -151,11 +219,7 @@ class Tasks(Resource):
     # Get all tasks - WORKS
     def get(self):
         tasks = [
-            {
-            "id": task.id,
-            "name": task.name,
-            "description": task.description
-            }
+            {"id": task.id, "name": task.name, "description": task.description}
             for task in Task.query.all()
         ]
         return make_response(tasks, 200)

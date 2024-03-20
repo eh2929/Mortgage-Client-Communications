@@ -1,6 +1,8 @@
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.orm import relationship, validates, backref
-from config import db
+from config import db, bcrypt
+from sqlalchemy.ext.hybrid import hybrid_property
+from werkzeug.security import generate_password_hash
 
 
 class User(db.Model, SerializerMixin):
@@ -11,8 +13,19 @@ class User(db.Model, SerializerMixin):
     email = db.Column(db.String, unique=True)
     phone_number = db.Column(db.String, unique=True)
     username = db.Column(db.String, unique=True)
-    password = db.Column(db.String)
+    _password_hash = db.Column(db.String)
     role = db.Column(db.String)
+
+    @property
+    def password(self):
+        raise AttributeError("password is not a readable attribute")
+
+    @password.setter
+    def password(self, password):
+        self._password_hash = generate_password_hash(password)
+
+    # this prevents that Exception being raised everytime we try to call the .to_dict() method in a request that returns information from users
+    serialize_rules = ("-password_hash",)
 
     # User (Borrower) has many loan applications
     borrower_loans = db.relationship(
