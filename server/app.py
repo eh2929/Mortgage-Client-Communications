@@ -66,9 +66,12 @@ api.add_resource(CheckSession, "/check_session", endpoint="check_session")
 
 # User class view
 class Users(Resource):
-
     # Get all users - works
     def get(self):
+        role = request.args.get("role")
+        query = User.query
+        if role:
+            query = query.filter(User.role == role)
         users = [
             {
                 "id": user.id,
@@ -79,13 +82,19 @@ class Users(Resource):
                 "password": user.password_hash,
                 "role": user.role,
             }
-            for user in User.query.all()
+            for user in query.all()
         ]
         return make_response(users, 200)
 
     # Create a new user - works
     def post(self):
         req_data = request.get_json()
+        role_mapping = {
+            "loan_officer": "loan officer",
+            "real_estate_agent": "real estate agent",
+            "borrower": "borrower",
+            "admin": "admin",
+        }
         try:
             new_user = User(
                 name=req_data["name"],
@@ -93,7 +102,7 @@ class Users(Resource):
                 password=req_data["password"],
                 phone_number=req_data["phone"],
                 username=req_data["username"],
-                role=req_data["role"],
+                role=role_mapping.get(req_data["role"], req_data["role"]),
             )
         except ValueError as e:
             return make_response({"error": ["validation errors"]}, 400)
@@ -390,6 +399,10 @@ class Comments(Resource):
     # Create a new comment - WORKS
     def post(self):
         req_data = request.get_json()
+        if "loan_application_id" not in req_data:
+            return make_response({"error": ["loan_application_id is required"]}, 400)
+        if "user_id" not in req_data:
+            return make_response({"error": ["user_id is required"]}, 400)
         try:
             new_comment = Comment(**req_data)
         except ValueError as e:
@@ -453,7 +466,10 @@ def create_admin_user():
             db.session.commit()
 
 
-create_admin_user()
+@app.cli.command("createadmin")
+def create_admin_command():
+    create_admin_user()
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)

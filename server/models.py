@@ -72,6 +72,11 @@ class Loan_Application(db.Model, SerializerMixin):
     def borrower_name(self):
         return self.borrower.name
 
+    def to_dict(self, *args, **kwargs):
+        result = super().to_dict(*args, **kwargs)
+        result["borrower_name"] = self.borrower_name
+        return result
+
     serialize_rules = (
         "-comments.loan_application",
         "-comments.user",
@@ -145,8 +150,6 @@ class Comment(db.Model, SerializerMixin):
     # Many comments belong to a loan application
     loan_application = db.relationship("Loan_Application", back_populates="comments")
     serialize_rules = (
-        "-user.comments",
         "-user.borrower_loans",
-        "-loan_application.comments",
         "-loan_application.assigned_tasks",
     )
