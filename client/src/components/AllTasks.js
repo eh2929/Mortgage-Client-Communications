@@ -1,6 +1,6 @@
 // AllTasks.js
 import React, { useState, useEffect } from "react";
-import "./AllTasks.css";
+// import "./AllTasks.css";
 
 function AllTasks() {
   const [tasks, setTasks] = useState([]);
@@ -69,7 +69,6 @@ function AllTasks() {
       return;
     }
 
-    
     const task = tasks.find((task) => task.id === taskId);
 
     if (!task) {
@@ -94,62 +93,100 @@ function AllTasks() {
         return response.json();
       })
       .then((data) => {
-        
         setAssignSuccessMessage("Task assigned successfully!");
       })
       .catch((error) => console.error("Error:", error));
   };
 
   return (
-    <div>
+    <div className="all-tasks-container p-8">
       {assignSuccessMessage && (
-        <p className="success-message">{assignSuccessMessage}</p>
+        <p className="success-message text-green-500">{assignSuccessMessage}</p>
       )}
-      {tasks.length === 0 ? (
-        <p>No tasks currently assigned.</p>
-      ) : (
-        tasks.map((task) => (
-          <div key={task.id}>
-            <input
-              type="text"
-              defaultValue={task.name}
-              onChange={(e) =>
-                startUpdateTask(task.id, { ...task, name: e.target.value })
-              }
-            />
-            <input
-              type="text"
-              defaultValue={task.description}
-              onChange={(e) =>
-                startUpdateTask(task.id, {
-                  ...task,
-                  description: e.target.value,
-                })
-              }
-            />
-            <button onClick={() => updateTask(task.id, editedTask)}>
-              Update
-            </button>
-            <button onClick={() => deleteTask(task.id)}>Delete</button>
-            <select onChange={(e) => setSelectedLoanId(e.target.value)}>
-              <option value="">Assign to loan</option>
-              {loanApps.map((loanApp) => (
-                <option key={loanApp.id} value={loanApp.id}>
-                  {loanApp.property_address}
-                </option>
-              ))}
-            </select>
-            <button onClick={() => assignTask(task.id)}>Assign Task</button>
-          </div>
-        ))
-      )}
-      <div className="input-group">
+      <div className="tasks-list space-y-4">
+        {tasks.length === 0 ? (
+          <p>No tasks currently assigned.</p>
+        ) : (
+          tasks.map((task) => (
+            <div
+              key={task.id}
+              className="task-item bg-white p-4 rounded shadow"
+            >
+              <div className="task-inputs space-y-2">
+                <div className="input-group">
+                  <p>Title:</p>
+                  <input
+                    type="text"
+                    defaultValue={task.name}
+                    onChange={(e) =>
+                      startUpdateTask(task.id, {
+                        ...task,
+                        name: e.target.value,
+                      })
+                    }
+                    className="border p-2 rounded"
+                  />
+                </div>
+                <div className="input-group">
+                  <p>Description:</p>
+                  <textarea
+                    defaultValue={task.description}
+                    onChange={(e) =>
+                      startUpdateTask(task.id, {
+                        ...task,
+                        description: e.target.value,
+                      })
+                    }
+                    placeholder="Task description"
+                    className="border p-2 rounded"
+                  />
+                </div>
+              </div>
+              <div className="task-buttons space-x-2">
+                <button
+                  onClick={() => updateTask(task.id, editedTask)}
+                  className="bg-blue-500 text-white p-2 rounded"
+                >
+                  Update
+                </button>
+                <button
+                  onClick={() => deleteTask(task.id)}
+                  className="bg-red-500 text-white p-2 rounded"
+                >
+                  Delete
+                </button>
+              </div>
+              <div className="task-assign space-x-2">
+                <select
+                  onChange={(e) => setSelectedLoanId(e.target.value)}
+                  className="border p-2 rounded"
+                >
+                  <option value="">Assign to loan</option>
+                  {loanApps.map((loanApp) => (
+                    <option key={loanApp.id} value={loanApp.id}>
+                      {loanApp.property_address}
+                    </option>
+                  ))}
+                </select>
+                <button
+                  onClick={() => assignTask(task.id)}
+                  className="bg-green-500 text-white p-2 rounded"
+                >
+                  Assign Task
+                </button>
+              </div>
+            </div>
+          ))
+        )}
+      </div>
+      <div className="input-group space-y-2 mt-8">
         <label>Title:</label>
         <input
           type="text"
           value={newTask.name}
           onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
           placeholder="Task name"
+          className="border p-2 rounded"
         />
         <label>Description:</label>
         <input
@@ -159,8 +196,14 @@ function AllTasks() {
             setNewTask({ ...newTask, description: e.target.value })
           }
           placeholder="Task description"
+          className="border p-2 rounded"
         />
-        <button onClick={createTask}>Add Task</button>
+        <button
+          onClick={createTask}
+          className="bg-blue-500 text-white p-2 rounded"
+        >
+          Add Task
+        </button>
       </div>
     </div>
   );

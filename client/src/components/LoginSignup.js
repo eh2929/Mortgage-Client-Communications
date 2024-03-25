@@ -1,57 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useHistory } from "react-router-dom";
-import styled from "styled-components";
 import { useFormik } from "formik";
 import * as yup from "yup";
+import { UserContext } from "./UserContext"; // Import UserContext
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background-color: #f5f5f5;
-  font-family: Arial;
-`;
-
-
-  const Heading = styled.h2`
-    margin-bottom: 10px; 
-  `;
-  const StyledButton = styled.button`
-    margin-bottom: 20px; 
-  `;
-
-  export const Form = styled.form`
-    display: flex;
-    flex-direction: column;
-    width: 300px; 
-    margin: 10px auto; 
-    padding: 20px; 
-    font-family: Arial;
-    font-size: 20px; 
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); 
-    border-radius: 5px; 
-    input[type="submit"] {
-      background-color: #42ddf5;
-      color: white;
-      height: 40px;
-      font-family: Arial;
-      font-size: 20px; 
-      margin-top: 10px;
-      margin-bottom: 10px;
-      border: none; 
-      cursor: pointer; 
-      transition: background-color 0.3s ease; 
-    }
-    input[type="submit"]:hover {
-      background-color: #5ee7f8; 
-    }
-  `;
-
-function LoginSignup({ updateUser }) {
+function LoginSignup() {
   const [signUp, setSignUp] = useState(false);
   const [error, setError] = useState(null);
+  const { setUser } = useContext(UserContext); // Use UserContext
 
   const history = useHistory();
 
@@ -91,14 +47,16 @@ function LoginSignup({ updateUser }) {
         },
         body: JSON.stringify(values),
       }).then((res) => {
-        console.log("Server response:", res)
+        console.log("Server response:", res);
         if (res.ok) {
           res.json().then((user) => {
             console.log(user);
-            updateUser(user);
+            setUser(user); // Use setUser from UserContext
             history.push("/");
             localStorage.setItem("isUserLoggedIn", "true");
             localStorage.setItem("userRole", user.role);
+            localStorage.setItem("userId", user.id);
+            localStorage.setItem("user", JSON.stringify(user));
           });
         } else {
           res.json().then((error) => setError(error.message));
@@ -107,27 +65,29 @@ function LoginSignup({ updateUser }) {
     },
   });
 
-
-
   return (
-    <Container>
-      {error && <Heading style={{ color: "red" }}> {error} </Heading>}
-      <Heading style={{ fontSize: "24px" }}>Sign in</Heading>
-      <Heading style={{ fontSize: "14px" }}>{signUp ? "Already have an account?" : "New User?"}</Heading>
-      <StyledButton onClick={handleClick}>
+    <div className="login-signup-container p-8">
+      {error && <h2 className="text-red-500"> {error} </h2>}
+      <h2 className="text-2xl font-bold">Sign in</h2>
+      <h2>{signUp ? "Already have an account?" : "New User?"}</h2>
+      <button
+        onClick={handleClick}
+        className="bg-blue-500 text-white p-2 rounded mt-2"
+      >
         {signUp ? "Log In!" : "Register now!"}
-      </StyledButton>
+      </button>
       {formik.errors &&
         Object.values(formik.errors).map((error) => (
-          <Heading style={{ color: "red", fontSize: "12px" }}>{error}</Heading>
+          <h2 className="text-red-500">{error}</h2>
         ))}
-      <Form onSubmit={formik.handleSubmit}>
+      <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
         <label>Username</label>
         <input
           type="text"
           name="username"
           value={formik.values.username}
           onChange={formik.handleChange}
+          className="border p-2 rounded"
         />
         <label>Password</label>
         <input
@@ -135,6 +95,7 @@ function LoginSignup({ updateUser }) {
           name="password"
           value={formik.values.password}
           onChange={formik.handleChange}
+          className="border p-2 rounded"
         />
         {signUp && (
           <>
@@ -144,6 +105,7 @@ function LoginSignup({ updateUser }) {
               name="email"
               value={formik.values.email}
               onChange={formik.handleChange}
+              className="border p-2 rounded"
             />
             <label>Name</label>
             <input
@@ -151,6 +113,7 @@ function LoginSignup({ updateUser }) {
               name="name"
               value={formik.values.name}
               onChange={formik.handleChange}
+              className="border p-2 rounded"
             />
             <label>Contact Number</label>
             <input
@@ -158,12 +121,14 @@ function LoginSignup({ updateUser }) {
               name="phone"
               value={formik.values.phone}
               onChange={formik.handleChange}
+              className="border p-2 rounded"
             />
             <label>Role</label>
             <select
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
+              className="border p-2 rounded"
             >
               <option value="">Select a role</option>
               <option value="borrower">Borrower</option>
@@ -172,11 +137,14 @@ function LoginSignup({ updateUser }) {
             </select>
           </>
         )}
-        <input type="submit" value={signUp ? "Sign Up!" : "Log In!"} />
-      </Form>
-    </Container>
+        <input
+          type="submit"
+          value={signUp ? "Sign Up!" : "Log In!"}
+          className="bg-blue-500 text-white p-2 rounded mt-2"
+        />
+      </form>
+    </div>
   );
 }
 
 export default LoginSignup;
-

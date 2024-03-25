@@ -1,10 +1,16 @@
-import React, { useState } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
+import { UserContext } from "./UserContext"; // Import UserContext
 
-function UserProfile({ user, updateUser }) {
+function UserProfile() {
+  const { user, setUser } = useContext(UserContext); // Use UserContext
   const [isEditing, setIsEditing] = useState(false);
   const [updatedUser, setUpdatedUser] = useState(user);
   const history = useHistory();
+
+  useEffect(() => {
+    setUpdatedUser(user);
+  }, [user]);
 
   // Check if user is null (i.e., no user is logged in)
   if (!user) {
@@ -33,7 +39,10 @@ function UserProfile({ user, updateUser }) {
       .then((response) => response.json())
       .then((data) => {
         // Update the user state with the updated user information
-        updateUser(data);
+        setUser(data);
+
+        // Store the updated user data in localStorage
+        localStorage.setItem("user", JSON.stringify(data));
 
         setIsEditing(false);
       })
@@ -41,6 +50,7 @@ function UserProfile({ user, updateUser }) {
         console.error("Error:", error);
       });
   };
+
   const handleDeleteClick = () => {
     if (window.confirm("Are you sure you want to delete your account?")) {
       fetch(`http://127.0.0.1:5555/users/${user.id}`, {
@@ -51,7 +61,11 @@ function UserProfile({ user, updateUser }) {
           // Handle the response from the server
           console.log(data);
           // Log out the user and redirect to the login page
-          updateUser(null);
+          setUser(null);
+
+          // Remove the user data from localStorage
+          localStorage.removeItem("user");
+
           history.push("/login");
         })
         .catch((error) => {
@@ -62,47 +76,66 @@ function UserProfile({ user, updateUser }) {
 
   // Display the user's information
   return (
-    <div>
-      <h1>User Profile</h1>
+    <div className="user-profile-container p-8">
+      <h1 className="text-2xl font-bold">User Profile</h1>
       {isEditing ? (
         <>
-          <label>Name:</label>
+          <label className="block mt-4">Name:</label>
           <input
             name="name"
             defaultValue={user.name}
             onChange={handleInputChange}
+            className="border p-2 rounded"
           />
-          <label>Email:</label>
+          <label className="block mt-4">Email:</label>
           <input
             name="email"
             defaultValue={user.email}
             onChange={handleInputChange}
+            className="border p-2 rounded"
           />
-          <label>Phone:</label>
+          <label className="block mt-4">Phone:</label>
           <input
             name="phone_number"
             defaultValue={user.phone_number}
             onChange={handleInputChange}
+            className="border p-2 rounded"
           />
-          <label>Username:</label>
+          <label className="block mt-4">Username:</label>
           <input
             name="username"
             defaultValue={user.username}
             onChange={handleInputChange}
+            className="border p-2 rounded"
           />
-          <button onClick={handleSaveClick}>Save</button>
+          <button
+            onClick={handleSaveClick}
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Save
+          </button>
         </>
       ) : (
         <>
-          <p>Name: {user.name}</p>
+          <p className="mt-4">Name: {user.name}</p>
           <p>Email: {user.email}</p>
           <p>Phone: {user.phone_number}</p>
           <p>Username: {user.username}</p>
           <p>Role: {user.role}</p>
-          <button onClick={handleEditClick}>Edit Profile</button>
+          <button
+            onClick={handleEditClick}
+            className="bg-blue-500 text-white p-2 rounded mt-4"
+          >
+            Edit Profile
+          </button>
         </>
       )}
-      <button onClick={handleDeleteClick}>Delete Account</button>
+      <button
+        onClick={handleDeleteClick}
+        className="bg-red-500 text-white p-2 rounded mt-4"
+      >
+        Delete Account
+      </button>
     </div>
   );
 }
