@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { UserContext } from "./UserContext"; // Import UserContext
+import { Button } from "./ui/button.jsx";
 
 function Logout() {
   const { setUser } = useContext(UserContext); // Use UserContext
@@ -19,12 +20,12 @@ function Logout() {
   };
 
   return (
-    <button
+    <Button
       onClick={handleLogout}
       className="bg-red-500 text-white p-2 rounded"
     >
       Logout
-    </button>
+    </Button>
   );
 }
 

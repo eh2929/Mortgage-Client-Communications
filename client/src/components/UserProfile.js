@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import { UserContext } from "./UserContext"; // Import UserContext
+import { Button } from "./ui/button.jsx";
 
 function UserProfile() {
   const { user, setUser } = useContext(UserContext); // Use UserContext
@@ -122,20 +123,21 @@ function UserProfile() {
           <p>Phone: {user.phone_number}</p>
           <p>Username: {user.username}</p>
           <p>Role: {user.role}</p>
-          <button
+          <Button
             onClick={handleEditClick}
             className="bg-blue-500 text-white p-2 rounded mt-4"
           >
             Edit Profile
-          </button>
+          </Button>
         </>
       )}
-      <button
+      <Button
         onClick={handleDeleteClick}
         className="bg-red-500 text-white p-2 rounded mt-4"
       >
         Delete Account
-      </button>
+      </Button>
+           
     </div>
   );
 }

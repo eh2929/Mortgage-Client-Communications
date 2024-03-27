@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Search from "./Search";
 import CreateLoanApplication from "./CreateLoanApplication";
+import { Button } from "./ui/button.jsx";
 // import "./LoanApps.css";
 
 function LoanApps() {
@@ -47,9 +48,9 @@ function LoanApps() {
               </div>
               <div className="loan-app-actions mt-4">
                 <Link to={`/loan_applications/${loanApp.id}`}>
-                  <button className="bg-blue-500 text-white p-2 rounded">
+                  <Button className="bg-blue-500 text-white p-2 rounded">
                     View Loan
-                  </button>
+                  </Button>
                 </Link>
               </div>
             </div>
