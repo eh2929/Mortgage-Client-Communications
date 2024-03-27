@@ -328,11 +328,19 @@ api.add_resource(TasksById, "/tasks/<int:id>")
 
 # Assigned_Task view
 class AssignedTasks(Resource):
-    # Get all assigned tasks - WORKS
+    # Get all assigned tasks
     def get(self):
-        assigned_tasks = Assigned_Task.query.options(
-            joinedload(Assigned_Task.task)
-        ).all()
+        loanId = request.args.get("loanId")
+        if loanId is not None:
+            assigned_tasks = (
+                Assigned_Task.query.filter_by(loan_application_id=loanId)
+                .options(joinedload(Assigned_Task.task))
+                .all()
+            )
+        else:
+            assigned_tasks = Assigned_Task.query.options(
+                joinedload(Assigned_Task.task)
+            ).all()
         return make_response(
             [assigned_task.serialize() for assigned_task in assigned_tasks], 200
         )
@@ -391,10 +399,14 @@ api.add_resource(AssignedTasksById, "/assigned_tasks/<int:id>")
 
 # Comment class view
 class Comments(Resource):
-    # Get all comments - WORKS
+    # Get all comments
     def get(self):
-        comments = [comment.to_dict() for comment in Comment.query.all()]
-        return make_response(comments, 200)
+        loanId = request.args.get("loanId")
+        if loanId is not None:
+            comments = Comment.query.filter_by(loan_application_id=loanId).all()
+        else:
+            comments = Comment.query.all()
+        return make_response([comment.to_dict() for comment in comments], 200)
 
     # Create a new comment - WORKS
     def post(self):
