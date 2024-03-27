@@ -8,10 +8,10 @@ function Comments({ comments, loanApplicationId }) {
   const [editedCommentText, setEditedCommentText] = useState("");
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5555/comments")
+    fetch(`http://127.0.0.1:5555/comments?loanId=${loanApplicationId}`)
       .then((response) => response.json())
       .then((data) => setAllComments(data));
-  }, []);
+  }, [loanApplicationId]);
 
   const userId = localStorage.getItem("userId");
 
@@ -37,53 +37,56 @@ function Comments({ comments, loanApplicationId }) {
         setNewComment("");
       });
   };
-    const startEditing = (id, currentText) => {
-      setEditingCommentId(id);
-      setEditedCommentText(currentText);
-    };
+  const startEditing = (id, currentText) => {
+    setEditingCommentId(id);
+    setEditedCommentText(currentText);
+  };
 
-    const submitEdit = (id) => {
+  const submitEdit = (id) => {
+    fetch(`http://127.0.0.1:5555/comments/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        comment: editedCommentText,
+        editedAt: new Date().toISOString(),
+      }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        const updatedComments = allComments.map((comment) =>
+          comment.id === id ? data : comment
+        );
+        setAllComments(updatedComments);
+        setEditingCommentId(null);
+        setEditedCommentText("");
+      });
+  };
+
+  const startDeleting = (id) => {
+    if (window.confirm("Are you sure you want to delete this comment?")) {
       fetch(`http://127.0.0.1:5555/comments/${id}`, {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          comment: editedCommentText,
-          editedAt: new Date().toISOString(),
-        }),
+        method: "DELETE",
       })
         .then((response) => response.json())
         .then((data) => {
-          const updatedComments = allComments.map((comment) =>
-            comment.id === id ? data : comment
+          const updatedComments = allComments.filter(
+            (comment) => comment.id !== id
           );
           setAllComments(updatedComments);
-          setEditingCommentId(null);
-          setEditedCommentText("");
         });
-    };
-
-    const startDeleting = (id) => {
-      if (window.confirm("Are you sure you want to delete this comment?")) {
-        fetch(`http://127.0.0.1:5555/comments/${id}`, {
-          method: "DELETE",
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            const updatedComments = allComments.filter(
-              (comment) => comment.id !== id
-            );
-            setAllComments(updatedComments);
-          });
-      }
-    };
+    }
+  };
 
   return (
     <div className="comments-container p-8">
       {allComments.map((comment, index) => {
         return (
-          <div key={index} className="comment bg-gray-800 p-4 rounded shadow mt-4">
+          <div
+            key={index}
+            className="comment bg-gray-800 p-4 rounded shadow mt-4"
+          >
             {editingCommentId === comment.id ? (
               <>
                 <input

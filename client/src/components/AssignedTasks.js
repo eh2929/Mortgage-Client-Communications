@@ -23,13 +23,13 @@ function AssignedTasks({ loanId }) {
       },
       body: JSON.stringify({ is_completed: true }),
     }).then(() => {
-      // Refresh the assigned tasks
-      fetch(`http://127.0.0.1:5555/assigned_tasks?loanId=${loanId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setAssignedTasks(data);
-          setSuccessMessage("Task marked as completed successfully!");
-        });
+      // Optimistically update the assignedTasks state
+      setAssignedTasks(
+        assignedTasks.map((task) =>
+          task.id === taskId ? { ...task, is_completed: true } : task
+        )
+      );
+      setSuccessMessage("Task marked as completed successfully!");
     });
   };
 
@@ -37,13 +37,9 @@ function AssignedTasks({ loanId }) {
     fetch(`http://127.0.0.1:5555/assigned_tasks/${taskId}`, {
       method: "DELETE",
     }).then(() => {
-      // Refresh the assigned tasks
-      fetch(`http://127.0.0.1:5555/assigned_tasks?loanId=${loanId}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setAssignedTasks(data);
-          setSuccessMessage("Task removed successfully!");
-        });
+      // Optimistically update the assignedTasks state
+      setAssignedTasks(assignedTasks.filter((task) => task.id !== taskId));
+      setSuccessMessage("Task removed successfully!");
     });
   };
 

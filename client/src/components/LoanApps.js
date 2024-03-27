@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 import Search from "./Search";
 import CreateLoanApplication from "./CreateLoanApplication";
 import { Button } from "./ui/button.jsx";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+
 
 
 function LoanApps() {
@@ -35,25 +44,27 @@ function LoanApps() {
   return (
     <div className="loan-apps-container p-8">
       <Search />
-      <div className="loan-apps-content mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="loan-apps-list">
+      <div className="loan-apps-content mt-8 grid grid-cols-1 gap-4">
+        <div className="loan-apps-list flex flex-col items-center">
           {loanApps.map((loanApp, index) => (
-            <div key={index} className="loan-app p-4 rounded shadow">
-              <div className="loan-app-header">
-                <h2 className="font-bold text-lg">{loanApp.borrower_name}</h2>
-              </div>
-              <div className="loan-app-details mt-2">
-                <p>{loanApp.property_address}</p>
-                <p>{loanApp.loan_officer_id}</p>
-              </div>
-              <div className="loan-app-actions mt-4">
+            <Card
+              key={index}
+              className="loan-app p-4 rounded shadow mb-3 w-80 h-48"
+            >
+              <CardHeader>
+                <CardTitle className="font-bold text-lg">
+                  {loanApp.borrower_name}
+                </CardTitle>
+                <CardDescription>{loanApp.property_address}</CardDescription>
+              </CardHeader>
+              <CardContent>
                 <Link to={`/loan_applications/${loanApp.id}`}>
                   <Button className="bg-blue-500 text-white p-2 rounded">
                     View Loan
                   </Button>
                 </Link>
-              </div>
-            </div>
+              </CardContent>
+            </Card>
           ))}
         </div>
         <div className="loan-apps-create">

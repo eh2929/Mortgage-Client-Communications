@@ -1,6 +1,6 @@
 // AllTasks.js
 import React, { useState, useEffect } from "react";
-
+import { Button } from "./ui/button";
 
 function AllTasks() {
   const [tasks, setTasks] = useState([]);
@@ -108,10 +108,7 @@ function AllTasks() {
           <p>No tasks currently assigned.</p>
         ) : (
           tasks.map((task) => (
-            <div
-              key={task.id}
-              className="task-item p-4 rounded shadow"
-            >
+            <div key={task.id} className="task-item p-4 rounded shadow">
               <div className="task-inputs space-y-2">
                 <div className="input-group">
                   <p>Title:</p>
@@ -143,18 +140,18 @@ function AllTasks() {
                 </div>
               </div>
               <div className="task-buttons space-x-2">
-                <button
+                <Button
                   onClick={() => updateTask(task.id, editedTask)}
                   className="bg-blue-500 text-white p-2 rounded"
                 >
                   Update
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => deleteTask(task.id)}
                   className="bg-red-500 text-white p-2 rounded"
                 >
                   Delete
-                </button>
+                </Button>
               </div>
               <div className="task-assign space-x-2">
                 <select
@@ -168,12 +165,12 @@ function AllTasks() {
                     </option>
                   ))}
                 </select>
-                <button
+                <Button
                   onClick={() => assignTask(task.id)}
                   className="bg-green-500 text-white p-2 rounded"
                 >
                   Assign Task
-                </button>
+                </Button>
               </div>
             </div>
           ))
@@ -198,12 +195,12 @@ function AllTasks() {
           placeholder="Task description"
           className="border p-2 rounded bg-gray-800 text-white"
         />
-        <button
+        <Button
           onClick={createTask}
           className="bg-blue-500 text-white p-2 rounded"
         >
           Add Task
-        </button>
+        </Button>
       </div>
     </div>
   );
