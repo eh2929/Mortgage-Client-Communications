@@ -18,8 +18,8 @@ function Dashboard() {
           <CarouselItem>
             <Link to="/login-signup">
               <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <h2>Login/Signup</h2>
+                <CardContent className="flex aspect-square bg-gray-800 items-center justify-center p-6">
+                  <h2>Login or Register Here!</h2>
                 </CardContent>
               </Card>
             </Link>
@@ -27,8 +27,8 @@ function Dashboard() {
           <CarouselItem>
             <Link to="/loan_applications">
               <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
-                  <h2>Start or Track a Loan Application</h2>
+                <CardContent className="flex aspect-square bg-gray-800 items-center justify-center p-6">
+                  <h2>Create or Track a Loan Application</h2>
                 </CardContent>
               </Card>
             </Link>
@@ -36,7 +36,7 @@ function Dashboard() {
           <CarouselItem>
             <Link to="/tasks">
               <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
+                <CardContent className="flex aspect-square bg-gray-800 items-center justify-center p-6">
                   <h2>View or Create Tasks for Clients</h2>
                 </CardContent>
               </Card>
@@ -45,7 +45,7 @@ function Dashboard() {
           <CarouselItem>
             <Link to="/user_profile">
               <Card>
-                <CardContent className="flex aspect-square items-center justify-center p-6">
+                <CardContent className="flex aspect-square bg-gray-800 items-center justify-center p-6">
                   <h2>Manage Your Profile</h2>
                 </CardContent>
               </Card>

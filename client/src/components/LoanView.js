@@ -3,8 +3,8 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Link, useParams } from "react-router-dom";
 import Comments from "./Comments";
 import AssignedTasks from "./AssignedTasks";
-// import "./LoanView.css"; // Import the CSS file
 import UserDropdown from "./UserDropdown";
+import { Button } from "./ui/button";
 
 function LoanView() {
   const { id } = useParams();
@@ -98,11 +98,6 @@ function LoanView() {
       console.error("Could not set new real estate agent");
     }
   }, []);
-
-  //  const handleBorrowerChange = (event) => {
-  //    const borrowerId = event.target.value;
-  //    setBorrower(borrowers.find((borrower) => borrower.id === borrowerId));
-  //  };
 
   if (!loanApp) {
     return (
@@ -199,47 +194,49 @@ function LoanView() {
           type="text"
           value={propertyAddress}
           onChange={(e) => setPropertyAddress(e.target.value)}
-          className="border p-2 rounded"
+          className="border p-2 rounded bg-gray-800 text-white"
         />
-        <button
+        <Button
           onClick={updatePropertyAddress}
           className="bg-blue-500 text-white p-2 rounded"
         >
           Update Property Address
-        </button>
+        </Button>
         <p>Loan Officer Name: {loanOfficer?.name}</p>
-        <UserDropdown
+        <UserDropdown 
           role="loan officer"
           selectedUserId={loanApp?.loan_officer_id}
           setSelectedUser={handleLoanOfficerChange}
+          className="bg-gray-800 text-white"
         />
-        <button
+        <Button
           onClick={updateLoanOfficer}
           className="bg-blue-500 text-white p-2 rounded"
         >
-          Update Assigned LO
-        </button>
+          Update Assigned LOa
+        </Button>
         <p>Real Estate Agent Name: {realEstateAgent?.name}</p>
         <UserDropdown
           role="real estate agent"
           selectedUserId={loanApp?.real_estate_agent_id}
           setSelectedUser={handleRealEstateAgentChange}
+          className="bg-gray-800 text-white"
         />
-        <button
+        <Button
           onClick={updateRealEstateAgent}
           className="bg-blue-500 text-white p-2 rounded"
         >
           Update Assigned Agent
-        </button>
+        </Button>
 
         <AssignedTasks loanId={id} />
         <h2 className="text-2xl font-bold mt-4">Add A Note</h2>
         <Comments loanApplicationId={id} comments={loanApp.comments} />
       </div>
       <Link to="/loan_applications" className="mt-4">
-        <button className="back-to-loan-apps-button bg-blue-500 text-white p-2 rounded">
+        <Button className="back-to-loan-apps-button bg-blue-500 text-white p-2 rounded">
           Back to Loan Applications
-        </button>
+        </Button>
       </Link>
     </div>
   );

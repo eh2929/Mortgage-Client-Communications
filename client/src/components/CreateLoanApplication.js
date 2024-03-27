@@ -1,5 +1,6 @@
 import React, { useState } from "react";
-// import "./CreateLoanApplication.css";
+import { Button } from "./ui/button";
+
 
 function CreateLoanApplication({
   onLoanApplicationCreated,
@@ -76,7 +77,7 @@ function CreateLoanApplication({
   return (
     <form onSubmit={handleSubmit} className="loan-app-form">
       <p className="loan-app-instructions">
-        To track a new loan application, enter the property address.
+        To track a new loan application, enter the propsective property address.
       </p>
       <div className="loan-app-input-group">
         <label className="loan-app-label">
@@ -84,31 +85,33 @@ function CreateLoanApplication({
           <input
             type="text"
             name="property_address"
-            placeholder="Enter property address or TBD"
+            placeholder="Enter property address"
             value={propertyAddress}
             onChange={(e) => setPropertyAddress(e.target.value)}
             required
-            className="loan-app-input"
+            className="loan-app-input bg-gray-800 text-white border border-gray-800 rounded p-2 mt-1 text-sm"
           />
         </label>
       </div>
       <div className="loan-app-checkbox-group">
         <label className="loan-app-checkbox-label">
-          <span
-            className={`loan-app-checkbox ${
-              isPropertyToBeDetermined ? "checked" : ""
-            }`}
-            onClick={handlePropertyToBeDeterminedClick}
-          >
-            {isPropertyToBeDetermined && (
-              <span className="loan-app-checkbox-inner"></span>
-            )}
-          </span>
-          No property address yet
+          <input
+            type="checkbox"
+            checked={isPropertyToBeDetermined}
+            onChange={handlePropertyToBeDeterminedClick}
+            className="p-2 mr-2"
+          />
+          I don't have a property address yet!
         </label>
       </div>
       <div className="loan-app-submit-group">
-        <input type="submit" value="Submit" className="loan-app-submit" />
+        <Button
+          type="submit"
+          value="Submit"
+          className="loan-app-submit bg-blue-500 text-white p-2 rounded"
+        >
+          Submit
+        </Button>
       </div>
     </form>
   );

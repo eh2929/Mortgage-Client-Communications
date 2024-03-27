@@ -86,28 +86,28 @@ function UserProfile() {
             name="name"
             defaultValue={user.name}
             onChange={handleInputChange}
-            className="border p-2 rounded"
+            className="border p-2 rounded bg-gray-800 text-white"
           />
           <label className="block mt-4">Email:</label>
           <input
             name="email"
             defaultValue={user.email}
             onChange={handleInputChange}
-            className="border p-2 rounded"
+            className="border p-2 rounded bg-gray-800 text-white"
           />
           <label className="block mt-4">Phone:</label>
           <input
             name="phone_number"
             defaultValue={user.phone_number}
             onChange={handleInputChange}
-            className="border p-2 rounded"
+            className="border p-2 rounded bg-gray-800 text-white"
           />
           <label className="block mt-4">Username:</label>
           <input
             name="username"
             defaultValue={user.username}
             onChange={handleInputChange}
-            className="border p-2 rounded"
+            className="border p-2 rounded bg-gray-800 text-white"
           />
           <button
             onClick={handleSaveClick}
@@ -137,7 +137,6 @@ function UserProfile() {
       >
         Delete Account
       </Button>
-           
     </div>
   );
 }

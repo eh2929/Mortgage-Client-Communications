@@ -3,6 +3,7 @@ import { useHistory } from "react-router-dom";
 import { useFormik } from "formik";
 import * as yup from "yup";
 import { UserContext } from "./UserContext"; // Import UserContext
+import { Button } from "./ui/button.jsx";
 
 function LoginSignup() {
   const [signUp, setSignUp] = useState(false);
@@ -70,12 +71,12 @@ function LoginSignup() {
       {error && <h2 className="text-red-500"> {error} </h2>}
       <h2 className="text-2xl font-bold">Sign in</h2>
       <h2>{signUp ? "Already have an account?" : "New User?"}</h2>
-      <button
+      <Button
         onClick={handleClick}
         className="bg-blue-500 text-white p-2 rounded mt-2"
       >
         {signUp ? "Log In!" : "Register now!"}
-      </button>
+      </Button>
       {formik.errors &&
         Object.values(formik.errors).map((error) => (
           <h2 className="text-red-500">{error}</h2>
@@ -87,7 +88,7 @@ function LoginSignup() {
           name="username"
           value={formik.values.username}
           onChange={formik.handleChange}
-          className="border p-2 rounded"
+          className="border p-2 rounded bg-gray-800 text-white"
         />
         <label>Password</label>
         <input
@@ -95,7 +96,7 @@ function LoginSignup() {
           name="password"
           value={formik.values.password}
           onChange={formik.handleChange}
-          className="border p-2 rounded"
+          className="border p-2 rounded bg-gray-800 text-white"
         />
         {signUp && (
           <>
@@ -105,7 +106,7 @@ function LoginSignup() {
               name="email"
               value={formik.values.email}
               onChange={formik.handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded bg-gray-800 text-white"
             />
             <label>Name</label>
             <input
@@ -113,7 +114,7 @@ function LoginSignup() {
               name="name"
               value={formik.values.name}
               onChange={formik.handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded bg-gray-800 text-white"
             />
             <label>Contact Number</label>
             <input
@@ -121,14 +122,14 @@ function LoginSignup() {
               name="phone"
               value={formik.values.phone}
               onChange={formik.handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded bg-gray-800 text-white"
             />
             <label>Role</label>
             <select
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
-              className="border p-2 rounded"
+              className="border p-2 rounded bg-gray-800 text-white"
             >
               <option value="">Select a role</option>
               <option value="borrower">Borrower</option>

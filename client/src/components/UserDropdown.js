@@ -1,7 +1,7 @@
 // UserDropdown.js
 import React, { useState, useEffect } from "react";
 
-function UserDropdown({ role, selectedUserId, setSelectedUser }) {
+function UserDropdown({ role, selectedUserId, setSelectedUser, className }) {
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -16,13 +16,17 @@ function UserDropdown({ role, selectedUserId, setSelectedUser }) {
       });
   }, [role, selectedUserId, setSelectedUser]);
 
-const handleChange = (event) => {
-  const userId = Number(event.target.value); // Convert to number
-  setSelectedUser(users.find((user) => user.id === userId));
-};
+  const handleChange = (event) => {
+    const userId = Number(event.target.value); // Convert to number
+    setSelectedUser(users.find((user) => user.id === userId));
+  };
 
   return (
-    <select value={selectedUserId} onChange={handleChange}>
+    <select
+      value={selectedUserId}
+      onChange={handleChange}
+      className={className}
+    >
       {users.map((user) => (
         <option key={user.id} value={user.id}>
           {user.name}

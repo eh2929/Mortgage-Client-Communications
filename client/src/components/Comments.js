@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { Button } from "./ui/button";
 
 function Comments({ comments, loanApplicationId }) {
   const [newComment, setNewComment] = useState("");
@@ -82,7 +83,7 @@ function Comments({ comments, loanApplicationId }) {
     <div className="comments-container p-8">
       {allComments.map((comment, index) => {
         return (
-          <div key={index} className="comment bg-white p-4 rounded shadow mt-4">
+          <div key={index} className="comment bg-gray-800 p-4 rounded shadow mt-4">
             {editingCommentId === comment.id ? (
               <>
                 <input
@@ -91,12 +92,12 @@ function Comments({ comments, loanApplicationId }) {
                   onChange={(e) => setEditedCommentText(e.target.value)}
                   className="border p-2 rounded"
                 />
-                <button
+                <Button
                   onClick={() => submitEdit(comment.id)}
                   className="bg-blue-500 text-white p-2 rounded mt-2"
                 >
                   Submit Edit
-                </button>
+                </Button>
               </>
             ) : (
               <>
@@ -110,18 +111,18 @@ function Comments({ comments, loanApplicationId }) {
                     Edited at: {new Date(comment.editedAt).toLocaleString()}
                   </p>
                 )}
-                <button
+                <Button
                   onClick={() => startEditing(comment.id, comment.comment)}
                   className="bg-blue-500 text-white p-2 rounded mt-2 mr-2"
                 >
                   Edit
-                </button>
-                <button
+                </Button>
+                <Button
                   onClick={() => startDeleting(comment.id)}
                   className="bg-red-500 text-white p-2 rounded mt-2"
                 >
                   Delete
-                </button>
+                </Button>
               </>
             )}
           </div>
@@ -131,7 +132,7 @@ function Comments({ comments, loanApplicationId }) {
         type="text"
         value={newComment}
         onChange={(e) => setNewComment(e.target.value)}
-        className="border p-2 rounded mt-4"
+        className="border bg-gray-800 p-2 rounded mt-4"
       />
       <button
         onClick={() => handleAddComment(loanApplicationId)}

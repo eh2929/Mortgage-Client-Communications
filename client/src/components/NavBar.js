@@ -7,26 +7,29 @@ function NavBar() {
   const { user } = useContext(UserContext); // Use UserContext
 
   return (
-    <nav className="flex bg-blue-500 p-4">
-      <Link to="/" className="text-white mr-4">
-        Home
-      </Link>
-      <Link to="/loan_applications" className="text-white mr-4">
-        Loan Applications
-      </Link>
-      <Link to="/tasks" className="text-white mr-4">
-        Tasks
-      </Link>
-      <Link to="/login-signup" className="text-white mr-4">
-        Login/Signup
-      </Link>
-      {user && (
-        <Link to="/user_profile" className="text-white mr-4">
-          User Profile
+    <nav className="flex justify-between items-center p-4 flex-grow">
+      <div className="flex items-center">
+        <Link to="/" className="text-white mr-4">
+          Home
         </Link>
-      )}
-      {/* Add more links as needed */}
-      {user && <Logout />} {/* Conditionally render the Logout button */}
+        <Link to="/loan_applications" className="text-white mr-4">
+          Loan Applications
+        </Link>
+        <Link to="/tasks" className="text-white mr-4">
+          Tasks
+        </Link>
+      </div>
+      <div className="flex items-center">
+        <Link to="/login-signup" className="text-white mr-4">
+          Login/Signup
+        </Link>
+        {user && (
+          <Link to="/user_profile" className="text-white mr-4">
+            User Profile
+          </Link>
+        )}
+        {user && <Logout />}
+      </div>
     </nav>
   );
 }

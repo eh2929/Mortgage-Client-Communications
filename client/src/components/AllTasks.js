@@ -1,6 +1,6 @@
 // AllTasks.js
 import React, { useState, useEffect } from "react";
-// import "./AllTasks.css";
+
 
 function AllTasks() {
   const [tasks, setTasks] = useState([]);
@@ -110,7 +110,7 @@ function AllTasks() {
           tasks.map((task) => (
             <div
               key={task.id}
-              className="task-item bg-white p-4 rounded shadow"
+              className="task-item p-4 rounded shadow"
             >
               <div className="task-inputs space-y-2">
                 <div className="input-group">
@@ -124,7 +124,7 @@ function AllTasks() {
                         name: e.target.value,
                       })
                     }
-                    className="border p-2 rounded"
+                    className="border p-2 rounded bg-gray-800 text-white"
                   />
                 </div>
                 <div className="input-group">
@@ -138,7 +138,7 @@ function AllTasks() {
                       })
                     }
                     placeholder="Task description"
-                    className="border p-2 rounded"
+                    className="border p-2 rounded bg-gray-800 text-white"
                   />
                 </div>
               </div>
@@ -159,7 +159,7 @@ function AllTasks() {
               <div className="task-assign space-x-2">
                 <select
                   onChange={(e) => setSelectedLoanId(e.target.value)}
-                  className="border p-2 rounded"
+                  className="border p-2 rounded bg-gray-800 text-white"
                 >
                   <option value="">Assign to loan</option>
                   {loanApps.map((loanApp) => (
@@ -186,7 +186,7 @@ function AllTasks() {
           value={newTask.name}
           onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
           placeholder="Task name"
-          className="border p-2 rounded"
+          className="border p-2 rounded bg-gray-800 text-white"
         />
         <label>Description:</label>
         <input
@@ -196,7 +196,7 @@ function AllTasks() {
             setNewTask({ ...newTask, description: e.target.value })
           }
           placeholder="Task description"
-          className="border p-2 rounded"
+          className="border p-2 rounded bg-gray-800 text-white"
         />
         <button
           onClick={createTask}

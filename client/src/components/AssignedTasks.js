@@ -1,5 +1,6 @@
 // AssignedTasks.js
 import React, { useState, useEffect } from "react";
+import { Button } from "./ui/button";
 
 function AssignedTasks({ loanId }) {
   const [assignedTasks, setAssignedTasks] = useState([]);
@@ -50,33 +51,33 @@ function AssignedTasks({ loanId }) {
     <div className="assigned-tasks-container p-8">
       <h2 className="text-2xl font-bold">Assigned Tasks</h2>
       {successMessage && <p className="text-green-500">{successMessage}</p>}
-      {assignedTasks.map((assignedTask) => (
-        <div
-          key={assignedTask.id}
-          className="assigned-task bg-white p-4 rounded shadow mt-4"
-        >
-          {assignedTask.task ? (
-            <>
-              <p>Task Name: {assignedTask.task.name}</p>
-              <p>Task Description: {assignedTask.task.description}</p>
-              <button
-                onClick={() => completeTask(assignedTask.id)}
-                className="bg-blue-500 text-white p-2 rounded mr-2"
-              >
-                Complete
-              </button>
-              <button
-                onClick={() => removeTask(assignedTask.id)}
-                className="bg-red-500 text-white p-2 rounded"
-              >
-                Remove
-              </button>
-            </>
-          ) : (
-            <p></p>
-          )}
-        </div>
-      ))}
+      {assignedTasks.map((assignedTask) => {
+        if (!assignedTask.task) {
+          return null; // Don't render anything if assignedTask.task does not exist
+        }
+
+        return (
+          <div
+            key={assignedTask.id}
+            className="assigned-task bg-gray-800 p-4 rounded shadow mt-4"
+          >
+            <p>Task Name: {assignedTask.task.name}</p>
+            <p>Task Description: {assignedTask.task.description}</p>
+            <Button
+              onClick={() => completeTask(assignedTask.id)}
+              className="bg-blue-500 text-white p-2 rounded mr-2"
+            >
+              Complete
+            </Button>
+            <Button
+              onClick={() => removeTask(assignedTask.id)}
+              className="bg-red-500 text-white p-2 rounded"
+            >
+              Unassign
+            </Button>
+          </div>
+        );
+      })}
     </div>
   );
 }
