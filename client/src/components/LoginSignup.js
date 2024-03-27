@@ -67,69 +67,74 @@ function LoginSignup() {
   });
 
   return (
-    <div className="login-signup-container p-8">
+    <div className="login-signup-container p-8 flex flex-col items-center justify-center min-h-screen">
       {error && <h2 className="text-red-500"> {error} </h2>}
-      <h2 className="text-2xl font-bold">Sign in</h2>
-      <h2>{signUp ? "Already have an account?" : "New User?"}</h2>
+      <h2 className="text-2xl font-bold mb-4">Sign in</h2>
+      <h2 className="mb-4">
+        {signUp ? "Already have an account?" : "New User?"}
+      </h2>
       <Button
         onClick={handleClick}
-        className="bg-blue-500 text-white p-2 rounded mt-2"
+        className="bg-blue-500 text-white p-2 rounded mt-2 mb-4"
       >
-        {signUp ? "Log In!" : "Register now!"}
+        {signUp ? "Log In" : "Register now"}
       </Button>
       {formik.errors &&
         Object.values(formik.errors).map((error) => (
           <h2 className="text-red-500">{error}</h2>
         ))}
-      <form onSubmit={formik.handleSubmit} className="space-y-4 mt-4">
-        <label>Username</label>
+      <form
+        onSubmit={formik.handleSubmit}
+        className="space-y-4 mt-4 w-full max-w-md"
+      >
+        <label className="block">Username</label>
         <input
           type="text"
           name="username"
           value={formik.values.username}
           onChange={formik.handleChange}
-          className="border p-2 rounded bg-gray-800 text-white"
+          className="border p-2 rounded bg-gray-800 w-full"
         />
-        <label>Password</label>
+        <label className="block">Password</label>
         <input
           type="password"
           name="password"
           value={formik.values.password}
           onChange={formik.handleChange}
-          className="border p-2 rounded bg-gray-800 text-white"
+          className="border p-2 rounded bg-gray-800 w-full"
         />
         {signUp && (
           <>
-            <label>Email</label>
+            <label className="block">Email</label>
             <input
               type="text"
               name="email"
               value={formik.values.email}
               onChange={formik.handleChange}
-              className="border p-2 rounded bg-gray-800 text-white"
+              className="border p-2 rounded bg-gray-800 w-full"
             />
-            <label>Name</label>
+            <label className="block">Name</label>
             <input
               type="text"
               name="name"
               value={formik.values.name}
               onChange={formik.handleChange}
-              className="border p-2 rounded bg-gray-800 text-white"
+              className="border p-2 rounded bg-gray-800 w-full"
             />
-            <label>Contact Number</label>
+            <label className="block">Contact Number</label>
             <input
               type="text"
               name="phone"
               value={formik.values.phone}
               onChange={formik.handleChange}
-              className="border p-2 rounded bg-gray-800 text-white"
+              className="border p-2 rounded bg-gray-800 w-full"
             />
-            <label>Role</label>
+            <label className="block">Role</label>
             <select
               name="role"
               value={formik.values.role}
               onChange={formik.handleChange}
-              className="border p-2 rounded bg-gray-800 text-white"
+              className="border p-2 rounded bg-gray-800 w-full"
             >
               <option value="">Select a role</option>
               <option value="borrower">Borrower</option>
@@ -138,11 +143,12 @@ function LoginSignup() {
             </select>
           </>
         )}
-        <input
+        <Button
           type="submit"
-          value={signUp ? "Sign Up!" : "Log In!"}
-          className="bg-blue-500 text-white p-2 rounded mt-2"
-        />
+          className="bg-blue-500 text-white p-2 rounded mt-2 w-full"
+        >
+          {signUp ? "Sign Up!" : "Log In!"}
+        </Button>
       </form>
     </div>
   );

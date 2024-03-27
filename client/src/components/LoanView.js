@@ -190,44 +190,50 @@ function LoanView() {
         <p>Email: {loanApp.borrower.email}</p>
         <p>Phone Number: {loanApp.borrower.phone_number}</p>
         <p>Property Address: {loanApp.property_address}</p>
-        <input
-          type="text"
-          value={propertyAddress}
-          onChange={(e) => setPropertyAddress(e.target.value)}
-          className="border p-2 rounded bg-gray-800 text-white"
-        />
-        <Button
-          onClick={updatePropertyAddress}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Update Property Address
-        </Button>
+        <div className="flex justify-between items-center">
+          <input
+            type="text"
+            value={propertyAddress}
+            onChange={(e) => setPropertyAddress(e.target.value)}
+            className="border p-2 rounded bg-gray-800 text-white flex-grow mr-2"
+          />
+          <Button
+            onClick={updatePropertyAddress}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Update Property Address
+          </Button>
+        </div>
         <p>Loan Officer Name: {loanOfficer?.name}</p>
-        <UserDropdown
-          role="loan officer"
-          selectedUserId={loanApp?.loan_officer_id}
-          setSelectedUser={handleLoanOfficerChange}
-          className="bg-gray-800 text-white"
-        />
-        <Button
-          onClick={updateLoanOfficer}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Update Assigned LO
-        </Button>
+        <div className="flex justify-between items-center">
+          <UserDropdown
+            role="loan officer"
+            selectedUserId={loanApp?.loan_officer_id}
+            setSelectedUser={handleLoanOfficerChange}
+            className="bg-gray-800 text-white flex-grow mr-2"
+          />
+          <Button
+            onClick={updateLoanOfficer}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Update Assigned LO
+          </Button>
+        </div>
         <p>Real Estate Agent Name: {realEstateAgent?.name}</p>
-        <UserDropdown
-          role="real estate agent"
-          selectedUserId={loanApp?.real_estate_agent_id}
-          setSelectedUser={handleRealEstateAgentChange}
-          className="bg-gray-800 text-white"
-        />
-        <Button
-          onClick={updateRealEstateAgent}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Update Assigned Agent
-        </Button>
+        <div className="flex justify-between items-center">
+          <UserDropdown
+            role="real estate agent"
+            selectedUserId={loanApp?.real_estate_agent_id}
+            setSelectedUser={handleRealEstateAgentChange}
+            className="bg-gray-800 text-white flex-grow mr-2"
+          />
+          <Button
+            onClick={updateRealEstateAgent}
+            className="bg-blue-500 text-white p-2 rounded"
+          >
+            Update Assigned Agent
+          </Button>
+        </div>
         <div className="w-full">
           <AssignedTasks loanId={id} className="w-full" />
         </div>

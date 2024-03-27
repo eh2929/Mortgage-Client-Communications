@@ -39,7 +39,7 @@ function NavBar() {
           <NavigationMenuItem>
             <Link to="/tasks" className="text-white mr-4">
               <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                Tasks
+                Task Manager
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>

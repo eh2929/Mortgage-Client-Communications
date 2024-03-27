@@ -28,6 +28,7 @@ function AllTasks() {
   const [selectedLoanId, setSelectedLoanId] = useState(null);
   const [assignSuccessMessage, setAssignSuccessMessage] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
     fetch("http://127.0.0.1:5555/tasks")
@@ -44,6 +45,14 @@ function AllTasks() {
       setIsLoading(false);
     }
   }, [tasks, loanApps]);
+
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+  };
 
   const createTask = () => {
     fetch("http://127.0.0.1:5555/tasks", {
@@ -126,100 +135,127 @@ function AllTasks() {
           <p>No tasks currently assigned.</p>
         ) : (
           tasks.map((task) => (
-            <div key={task.id} className="task-item p-4 rounded shadow">
-              <div className="task-inputs space-y-2">
-                <div className="input-group">
-                  <p>Title:</p>
-                  <input
-                    type="text"
-                    defaultValue={task.name}
-                    onChange={(e) =>
-                      startUpdateTask(task.id, {
-                        ...task,
-                        name: e.target.value,
-                      })
-                    }
-                    className="border p-2 rounded bg-gray-800 text-white"
-                  />
+            <Card key={task.id}>
+              <CardHeader>
+                <CardTitle>{task.name}</CardTitle>
+                <CardDescription>{task.description}</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="task-inputs space-y-2">
+                  <div className="input-group">
+                    <p>Title:</p>
+                    <input
+                      type="text"
+                      defaultValue={task.name}
+                      onChange={(e) =>
+                        startUpdateTask(task.id, {
+                          ...task,
+                          name: e.target.value,
+                        })
+                      }
+                      className="border p-2 rounded bg-gray-800 text-white"
+                    />
+                  </div>
+                  <div className="input-group">
+                    <p>Description:</p>
+                    <textarea
+                      defaultValue={task.description}
+                      onChange={(e) =>
+                        startUpdateTask(task.id, {
+                          ...task,
+                          description: e.target.value,
+                        })
+                      }
+                      className="border p-2 rounded bg-gray-800 text-white"
+                    />
+                  </div>
                 </div>
-                <div className="input-group">
-                  <p>Description:</p>
-                  <textarea
-                    defaultValue={task.description}
-                    onChange={(e) =>
-                      startUpdateTask(task.id, {
-                        ...task,
-                        description: e.target.value,
-                      })
-                    }
-                    placeholder="Task description"
-                    className="border p-2 rounded bg-gray-800 text-white"
-                  />
+              </CardContent>
+              <CardFooter>
+                <div className="task-buttons space-x-2">
+                  <Button
+                    onClick={() => updateTask(task.id, editedTask)}
+                    className="bg-blue-500 text-white p-2 rounded"
+                  >
+                    Update
+                  </Button>
+                  <Button
+                    onClick={() => deleteTask(task.id)}
+                    className="bg-red-500 text-white p-2 rounded"
+                  >
+                    Delete
+                  </Button>
                 </div>
-              </div>
-              <div className="task-buttons space-x-2">
-                <Button
-                  onClick={() => updateTask(task.id, editedTask)}
-                  className="bg-blue-500 text-white p-2 rounded"
-                >
-                  Update
-                </Button>
-                <Button
-                  onClick={() => deleteTask(task.id)}
-                  className="bg-red-500 text-white p-2 rounded"
-                >
-                  Delete
-                </Button>
-              </div>
-              <div className="task-assign space-x-2">
-                <select
-                  onChange={(e) => setSelectedLoanId(e.target.value)}
-                  className="border p-2 rounded bg-gray-800 text-white"
-                >
-                  <option value="">Assign to loan</option>
-                  {loanApps.map((loanApp) => (
-                    <option key={loanApp.id} value={loanApp.id}>
-                      {loanApp.property_address}
-                    </option>
-                  ))}
-                </select>
-                <Button
-                  onClick={() => assignTask(task.id)}
-                  className="bg-green-500 text-white p-2 rounded"
-                >
-                  Assign Task
-                </Button>
-              </div>
-            </div>
+                <div className="task-assign space-x-2">
+                  <select
+                    onChange={(e) => setSelectedLoanId(e.target.value)}
+                    className="border p-2 rounded bg-gray-800 text-white"
+                  >
+                    <option value="">Assign to loan</option>
+                    {loanApps.map((loanApp) => (
+                      <option key={loanApp.id} value={loanApp.id}>
+                        {loanApp.property_address}
+                      </option>
+                    ))}
+                  </select>
+                  <Button
+                    onClick={() => assignTask(task.id)}
+                    className="bg-green-500 text-white p-2 rounded"
+                  >
+                    Assign Task
+                  </Button>
+                </div>
+              </CardFooter>
+            </Card>
           ))
         )}
       </div>
-      <div className="input-group space-y-2 mt-8">
-        <label>Title:</label>
-        <input
-          type="text"
-          value={newTask.name}
-          onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
-          placeholder="Task name"
-          className="border p-2 rounded bg-gray-800 text-white"
-        />
-        <label>Description:</label>
-        <input
-          type="text"
-          value={newTask.description}
-          onChange={(e) =>
-            setNewTask({ ...newTask, description: e.target.value })
-          }
-          placeholder="Task description"
-          className="border p-2 rounded bg-gray-800 text-white"
-        />
-        <Button
-          onClick={createTask}
-          className="bg-blue-500 text-white p-2 rounded"
-        >
-          Add Task
-        </Button>
-      </div>
+      <Drawer isOpen={isDrawerOpen} onClose={handleCloseDrawer}>
+        <div className="inline-block text-center w-full">
+          <DrawerTrigger
+            onClick={handleOpenDrawer}
+            className="border-2 border-gray-300 p-2 rounded mx-auto text-white"
+          >
+            Start Tracking a New Task
+          </DrawerTrigger>
+        </div>
+        <DrawerContent>
+          <DrawerHeader>
+            <DrawerTitle className="mx-auto">Create a New Task</DrawerTitle>
+          </DrawerHeader>
+          <div className="new-task-form mx-auto mt-8">
+            <label>Title:</label>
+            <input
+              type="text"
+              value={newTask.name}
+              onChange={(e) => setNewTask({ ...newTask, name: e.target.value })}
+              placeholder="Task title"
+              className="border p-2 rounded bg-gray-800 text-white"
+            />
+            <label>Description:</label>
+            <input
+              type="text"
+              value={newTask.description}
+              onChange={(e) =>
+                setNewTask({ ...newTask, description: e.target.value })
+              }
+              placeholder="Task description"
+              className="border p-2 rounded bg-gray-800 text-white"
+            />
+            <Button
+              onClick={createTask}
+              className="bg-blue-500 text-white p-2 rounded"
+            >
+              Create Task
+            </Button>
+          </div>
+          <DrawerFooter>
+            <DrawerClose>
+              <Button onClick={handleCloseDrawer}>Cancel</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 }

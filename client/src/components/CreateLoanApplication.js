@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 
-
 function CreateLoanApplication({
   onLoanApplicationCreated,
   isUserLoggedIn,
-  userRole,
+  userRole, closeDrawer,
 }) {
   const [propertyAddress, setPropertyAddress] = useState("");
   const [isPropertyToBeDetermined, setIsPropertyToBeDetermined] =
@@ -61,6 +60,8 @@ function CreateLoanApplication({
             if (userData && userData.name) {
               data.borrower_name = userData.name;
               onLoanApplicationCreated(data);
+              window.alert("Loan application created successfully");
+              closeDrawer();
             } else {
               throw new Error("User data is null or name is not defined");
             }
@@ -76,7 +77,6 @@ function CreateLoanApplication({
 
   return (
     <form onSubmit={handleSubmit} className="loan-app-form mx-auto">
-      
       <div className="loan-app-input-group">
         <label className="loan-app-label">
           Property Address:

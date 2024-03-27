@@ -101,6 +101,7 @@ function LoanApps() {
               onLoanApplicationCreated={fetchLoanApps}
               isUserLoggedIn={isUserLoggedIn}
               userRole={userRole}
+              closeDrawer={handleCloseDrawer}
             />
             <DrawerFooter>
               <DrawerClose>
