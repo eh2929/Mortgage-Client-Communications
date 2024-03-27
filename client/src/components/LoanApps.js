@@ -11,13 +11,22 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card";
-
-
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "./ui/drawer";
 
 function LoanApps() {
   const [loanApps, setLoanApps] = useState([]);
   const [userRole, setUserRole] = useState("");
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const fetchLoanApps = () => {
     fetch("http://127.0.0.1:5555/loan_applications")
@@ -40,6 +49,14 @@ function LoanApps() {
     setIsUserLoggedIn(loggedIn);
     setUserRole(role);
   }, []);
+
+  const handleOpenDrawer = () => {
+    setIsDrawerOpen(true);
+  };
+
+  const handleCloseDrawer = () => {
+    setIsDrawerOpen(false);
+  };
 
   return (
     <div className="loan-apps-container p-8">
@@ -67,14 +84,31 @@ function LoanApps() {
             </Card>
           ))}
         </div>
-        <div className="loan-apps-create">
-          <CreateLoanApplication
-            onLoanApplicationCreated={fetchLoanApps}
-            isUserLoggedIn={isUserLoggedIn}
-            userRole={userRole}
-            className="bg-white p-4 rounded shadow"
-          />
-        </div>
+        <Drawer isOpen={isDrawerOpen} onClose={handleCloseDrawer}>
+          <div className="inline-block text-center w-full">
+            <DrawerTrigger
+              onClick={handleOpenDrawer}
+              className="border-2 border-gray-300 p-2 rounded"
+            >
+              Start Tracking a New Loan Application
+            </DrawerTrigger>
+          </div>
+          <DrawerContent>
+            <DrawerHeader>
+              <DrawerTitle className="mx-auto">Create a New Loan Application</DrawerTitle>
+            </DrawerHeader>
+            <CreateLoanApplication
+              onLoanApplicationCreated={fetchLoanApps}
+              isUserLoggedIn={isUserLoggedIn}
+              userRole={userRole}
+            />
+            <DrawerFooter>
+              <DrawerClose>
+                <Button onClick={handleCloseDrawer}>Cancel</Button>
+              </DrawerClose>
+            </DrawerFooter>
+          </DrawerContent>
+        </Drawer>
       </div>
     </div>
   );

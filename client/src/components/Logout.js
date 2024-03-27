@@ -22,7 +22,7 @@ function Logout() {
   return (
 <Button
   onClick={handleLogout}
-  className="bg-red-500 text-white p-2 rounded flex items-center"
+  className="bg-gray-800 text-white p-2 rounded flex items-center"
 >
   Logout
 </Button>

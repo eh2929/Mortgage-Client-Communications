@@ -75,10 +75,8 @@ function CreateLoanApplication({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="loan-app-form">
-      <p className="loan-app-instructions">
-        To track a new loan application, enter the propsective property address.
-      </p>
+    <form onSubmit={handleSubmit} className="loan-app-form mx-auto">
+      
       <div className="loan-app-input-group">
         <label className="loan-app-label">
           Property Address:

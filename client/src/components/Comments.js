@@ -80,7 +80,7 @@ function Comments({ comments, loanApplicationId }) {
   };
 
   return (
-    <div className="comments-container p-8">
+    <div className="comments-container py-8 w-full">
       {allComments.map((comment, index) => {
         return (
           <div

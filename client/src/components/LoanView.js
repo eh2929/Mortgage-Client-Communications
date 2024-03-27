@@ -183,8 +183,8 @@ function LoanView() {
   };
 
   return (
-    <div className="loan-view-container p-8">
-      <div className="loan-view space-y-4">
+    <div className="loan-view-container p-8 flex flex-col items-center justify-center">
+      <div className="loan-view space-y-4 w-full max-w-3xl">
         <h2 className="text-2xl font-bold">Contact Information</h2>
         <p>Name: {loanApp.borrower.name}</p>
         <p>Email: {loanApp.borrower.email}</p>
@@ -203,7 +203,7 @@ function LoanView() {
           Update Property Address
         </Button>
         <p>Loan Officer Name: {loanOfficer?.name}</p>
-        <UserDropdown 
+        <UserDropdown
           role="loan officer"
           selectedUserId={loanApp?.loan_officer_id}
           setSelectedUser={handleLoanOfficerChange}
@@ -213,7 +213,7 @@ function LoanView() {
           onClick={updateLoanOfficer}
           className="bg-blue-500 text-white p-2 rounded"
         >
-          Update Assigned LOa
+          Update Assigned LO
         </Button>
         <p>Real Estate Agent Name: {realEstateAgent?.name}</p>
         <UserDropdown
@@ -228,10 +228,17 @@ function LoanView() {
         >
           Update Assigned Agent
         </Button>
-
-        <AssignedTasks loanId={id} />
-        <h2 className="text-2xl font-bold mt-4">Add A Note</h2>
-        <Comments loanApplicationId={id} comments={loanApp.comments} />
+        <div className="w-full">
+          <AssignedTasks loanId={id} className="w-full" />
+        </div>
+        <div className="w-full">
+          <h2 className="text-2xl font-bold mt-4">Add A Note</h2>
+          <Comments
+            loanApplicationId={id}
+            comments={loanApp.comments}
+            className="w-full"
+          />
+        </div>
       </div>
       <Link to="/loan_applications" className="mt-4">
         <Button className="back-to-loan-apps-button bg-blue-500 text-white p-2 rounded">

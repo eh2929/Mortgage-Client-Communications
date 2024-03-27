@@ -44,7 +44,7 @@ function AssignedTasks({ loanId }) {
   };
 
   return (
-    <div className="assigned-tasks-container p-8">
+    <div className="assigned-tasks-container py-8 w-full">
       <h2 className="text-2xl font-bold">Assigned Tasks</h2>
       {successMessage && <p className="text-green-500">{successMessage}</p>}
       {assignedTasks.map((assignedTask) => {
