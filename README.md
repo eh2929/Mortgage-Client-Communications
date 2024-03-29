@@ -36,10 +36,4 @@ Now, you should be able to access the application at `localhost:3000` (for the f
 
 The application serves as a platform for managing loan applications. It offers features such as user authentication, viewing and managing loan applications, tasks, and comments. Additionally, the application provides different views based on user roles.
 
-## Contributing
 
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
-
-## License
-
-This project is licensed under the MIT License.
