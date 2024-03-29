@@ -43,6 +43,13 @@ function NavBar() {
               </NavigationMenuLink>
             </Link>
           </NavigationMenuItem>
+          <NavigationMenuItem>
+            <Link to="/contact" className="text-white mr-4">
+              <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                Contact Us
+              </NavigationMenuLink>
+            </Link>
+          </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
       <div className="flex justify-end">

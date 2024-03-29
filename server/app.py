@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# Standard library imports
-
-# Remote library imports
 from flask import Flask, abort, jsonify, make_response, request, session
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -11,10 +8,9 @@ from sqlalchemy.orm import joinedload
 from models import User, Loan_Application, Task, Assigned_Task, Comment
 from werkzeug.exceptions import NotFound, Unauthorized
 
-# Local imports
+
 from config import app, db, api
 
-# Initialize Api
 api = Api(app)
 
 login_manager = LoginManager()
@@ -29,22 +25,6 @@ def load_user(user_id):
 @app.route("/")
 def index():
     return "<h1>Project Server</h1>"
-
-
-# @app.before_request
-# def check_if_logged_in():
-#     open_access_list = ["", "signup", "login", "logout", "authorized"]
-#     if request.endpoint not in open_access_list:
-#         if (
-#             "user_id" not in session
-#             or db.session.get(User, session["user_id"]).role != "admin"
-#         ):
-#             return make_response(
-#                 {
-#                     "error:": "Unauthorized: you must be logged in to access this resource"
-#                 },
-#                 401,
-#             )
 
 
 class CheckSession(Resource):
@@ -66,7 +46,7 @@ api.add_resource(CheckSession, "/check_session", endpoint="check_session")
 
 # User class view
 class Users(Resource):
-    # Get all users - works
+    # Get all users
     def get(self):
         role = request.args.get("role")
         query = User.query
@@ -86,7 +66,7 @@ class Users(Resource):
         ]
         return make_response(users, 200)
 
-    # Create a new user - works
+    # Create a new user
     def post(self):
         req_data = request.get_json()
         role_mapping = {
@@ -147,16 +127,16 @@ def logout():
     return make_response({}, 204)
 
 
-# User by ID view - works
+# User by ID view
 class UsersById(Resource):
-    def get(self, id):  # tested - works
+    def get(self, id):
         user = User.query.filter(User.id == id).first()
         if user:
             return make_response(user.to_dict(), 200)
         else:
             return make_response({"error": "User not found"}, 404)
 
-    def delete(self, id):  # tested - works
+    def delete(self, id):
         user = User.query.filter(User.id == id).first()
         if not user:
             return make_response({"error": "User not found"}, 404)
@@ -164,7 +144,7 @@ class UsersById(Resource):
         db.session.commit()
         return make_response({"message": "User deleted successfully"}, 200)
 
-    def patch(self, id):  # tested - works
+    def patch(self, id):
         user = User.query.filter(User.id == id).first()
         req_data = request.get_json()
         if not user:
@@ -183,15 +163,10 @@ api.add_resource(UsersById, "/users/<int:id>")
 
 # Loan_Application class view
 class LoanApplications(Resource):
-    # Get all loan applications
+
     def get(self):
-        # if current_user.is_authenticated:
-        #     if current_user.role == "admin":
+
         loan_applications_query = Loan_Application.query.all()
-        # else:
-        #     loan_applications_query = Loan_Application.query.filter_by(
-        #         borrower_id=current_user.id
-        #     ).all()
 
         loan_applications = [
             {
@@ -214,11 +189,7 @@ class LoanApplications(Resource):
             for loan_app in loan_applications_query
         ]
         return make_response(loan_applications, 200)
-        # else:
-        #     pass
-        # return make_response({"error": "User not authenticated"}, 401)
 
-    # Create a new loan application - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -235,14 +206,14 @@ api.add_resource(LoanApplications, "/loan_applications")
 
 # Loan_Application by ID view
 class LoanApplicationsById(Resource):
-    def get(self, id):  # tested - works
+    def get(self, id):
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         if loan_app:
             return make_response(loan_app.to_dict(), 200)
         else:
             return make_response({"error": "Loan Application not found"}, 404)
 
-    def delete(self, id):  # tested - works
+    def delete(self, id):
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         if not loan_app:
             return make_response({"error": "Loan Application not found"}, 404)
@@ -250,7 +221,7 @@ class LoanApplicationsById(Resource):
         db.session.commit()
         return make_response({"message": "Loan Application deleted successfully"}, 200)
 
-    def patch(self, id):  # tested - works
+    def patch(self, id):
         loan_app = Loan_Application.query.filter(Loan_Application.id == id).first()
         req_data = request.get_json()
         if not loan_app:
@@ -269,7 +240,7 @@ api.add_resource(LoanApplicationsById, "/loan_applications/<int:id>")
 
 # Task class view
 class Tasks(Resource):
-    # Get all tasks - WORKS
+
     def get(self):
         tasks = [
             {"id": task.id, "name": task.name, "description": task.description}
@@ -277,7 +248,6 @@ class Tasks(Resource):
         ]
         return make_response(tasks, 200)
 
-    # Create a new task - WORKS
     def post(self):
         req_data = request.get_json()
         try:
@@ -294,14 +264,14 @@ api.add_resource(Tasks, "/tasks")
 
 # Task by ID view
 class TasksById(Resource):
-    def get(self, id):  # tested - works
+    def get(self, id):
         task = Task.query.filter(Task.id == id).first()
         if task:
             return make_response(task.to_dict(), 200)
         else:
             return make_response({"error": "Task not found"}, 404)
 
-    def delete(self, id):  # tested - works
+    def delete(self, id):
         task = Task.query.filter(Task.id == id).first()
         if not task:
             return make_response({"error": "Task not found"}, 404)
@@ -309,7 +279,7 @@ class TasksById(Resource):
         db.session.commit()
         return make_response({"message": "Task deleted successfully"}, 200)
 
-    def patch(self, id):  # tested - works
+    def patch(self, id):
         task = Task.query.filter(Task.id == id).first()
         req_data = request.get_json()
         if not task:
@@ -345,7 +315,7 @@ class AssignedTasks(Resource):
             [assigned_task.serialize() for assigned_task in assigned_tasks], 200
         )
 
-    # Create a new assigned task - WORKS
+    # Create a new assigned task
 
     def post(self):
         req_data = request.get_json()
@@ -365,14 +335,14 @@ api.add_resource(AssignedTasks, "/assigned_tasks")
 
 # Assigned_Task by ID view
 class AssignedTasksById(Resource):
-    def get(self, id):  # tested - works
+    def get(self, id):
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         if assigned_task:
             return make_response(assigned_task.to_dict(), 200)
         else:
             return make_response({"error": "Assigned Task not found"}, 404)
 
-    def delete(self, id):  # tested - works
+    def delete(self, id):
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         if not assigned_task:
             return make_response({"error": "Assigned Task not found"}, 404)
@@ -380,7 +350,7 @@ class AssignedTasksById(Resource):
         db.session.commit()
         return make_response({"message": "Assigned Task deleted successfully"}, 200)
 
-    def patch(self, id):  # tested - works
+    def patch(self, id):
         assigned_task = Assigned_Task.query.filter(Assigned_Task.id == id).first()
         req_data = request.get_json()
         if not assigned_task:
@@ -408,7 +378,7 @@ class Comments(Resource):
             comments = Comment.query.all()
         return make_response([comment.to_dict() for comment in comments], 200)
 
-    # Create a new comment - WORKS
+    # Create a new comment
     def post(self):
         req_data = request.get_json()
         if "loan_application_id" not in req_data:
@@ -429,14 +399,14 @@ api.add_resource(Comments, "/comments")
 
 # Comments by ID view
 class CommentsById(Resource):
-    def get(self, id):  # tested - works
+    def get(self, id):
         comment = Comment.query.filter(Comment.id == id).first()
         if comment:
             return make_response(comment.to_dict(), 200)
         else:
             return make_response({"error": "Comment not found"}, 404)
 
-    def delete(self, id):  # tested - works
+    def delete(self, id):
         comment = Comment.query.filter(Comment.id == id).first()
         if not comment:
             return make_response({"error": "Comment not found"}, 404)
@@ -444,7 +414,7 @@ class CommentsById(Resource):
         db.session.commit()
         return make_response({"message": "Comment deleted successfully"}, 200)
 
-    def patch(self, id):  # tested - works
+    def patch(self, id):
         comment = Comment.query.filter(Comment.id == id).first()
         req_data = request.get_json()
         if not comment:

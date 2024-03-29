@@ -9,7 +9,7 @@ import LoginSignup from "./LoginSignup";
 import UserProfile from "./UserProfile";
 import { UserProvider } from "./UserContext";
 import Dashboard from "./Dashboard";
-// import "./Dashboard.css";
+import ContactForm from "./ContactForm";
 
 function App() {
   return (
@@ -37,6 +37,9 @@ function App() {
           </Route>
           <Route path="/user_profile">
             <UserProfile />
+          </Route>
+          <Route path="/contact">
+            <ContactForm />
           </Route>
         </Switch>
         <Footer />
