@@ -6,13 +6,11 @@ import { navigationMenuTriggerStyle } from "./ui/navigation-menu";
 
 import {
   NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIndicator,
+ 
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
-  NavigationMenuTrigger,
-  NavigationMenuViewport,
+
 } from "./ui/navigation-menu";
 
 function NavBar() {

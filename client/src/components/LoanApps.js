@@ -7,7 +7,6 @@ import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from "./ui/card";
@@ -15,7 +14,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -70,7 +68,7 @@ function LoanApps() {
             >
               <CardHeader>
                 <CardTitle className="font-bold text-lg">
-                  {loanApp.borrower_name}
+                  {loanApp.borrower_name || "No Name Provided"}
                 </CardTitle>
                 <CardDescription>{loanApp.property_address}</CardDescription>
               </CardHeader>
@@ -95,7 +93,9 @@ function LoanApps() {
           </div>
           <DrawerContent>
             <DrawerHeader>
-              <DrawerTitle className="mx-auto">Create a New Loan Application</DrawerTitle>
+              <DrawerTitle className="mx-auto">
+                Create a New Loan Application
+              </DrawerTitle>
             </DrawerHeader>
             <CreateLoanApplication
               onLoanApplicationCreated={fetchLoanApps}

@@ -9,12 +9,6 @@ import { Button } from "./ui/button";
 function LoanView() {
   const { id } = useParams();
   const [loanApp, setLoanApp] = useState(null);
-  const [loanOfficer, setLoanOfficer] = useState(null);
-  const [realEstateAgent, setRealEstateAgent] = useState(null);
-  const [borrower, setBorrower] = useState(null);
-  const [loanOfficers, setLoanOfficers] = useState([]);
-  const [realEstateAgents, setRealEstateAgents] = useState([]);
-  const [borrowers, setBorrowers] = useState([]);
   const [propertyAddress, setPropertyAddress] = useState("");
 
   useEffect(() => {
@@ -23,15 +17,6 @@ function LoanView() {
       setPropertyAddress(loanApp.property_address);
     }
   }, [loanApp]);
-
-  useEffect(() => {
-    // Fetch the loan application data whenever the id changes
-    fetch(`http://127.0.0.1:5555/loan_applications/${id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setLoanApp(data);
-      });
-  }, [id]);
 
   useEffect(() => {
     // Fetch all loan officers, real estate agents, and borrowers
@@ -49,14 +34,6 @@ function LoanView() {
           borrowersData,
           loanAppData,
         ]) => {
-          console.log("Loan officers:", loanOfficersData);
-          console.log("Real estate agents:", realEstateAgentsData);
-          console.log("Borrowers:", borrowersData);
-          console.log("Loan application:", loanAppData);
-          setLoanOfficers(loanOfficersData);
-          setRealEstateAgents(realEstateAgentsData);
-          setBorrowers(borrowersData);
-          setLoanApp(loanAppData);
           const loanOfficer = loanOfficersData.find(
             (officer) => officer.id === loanAppData.loan_officer_id
           );
@@ -66,15 +43,16 @@ function LoanView() {
           const borrower = borrowersData.find(
             (borrower) => borrower.id === loanAppData.borrower_id
           );
-          if (loanOfficer) {
-            setLoanOfficer(loanOfficer);
-          }
-          if (realEstateAgent) {
-            setRealEstateAgent(realEstateAgent);
-          }
-          if (borrower) {
-            setBorrower(borrower);
-          }
+
+          setLoanApp({
+            ...loanAppData,
+            loanOfficer,
+            realEstateAgent,
+            borrower,
+            loanOfficers: loanOfficersData,
+            realEstateAgents: realEstateAgentsData,
+            borrowers: borrowersData,
+          });
         }
       );
   }, [id]);
@@ -83,7 +61,10 @@ function LoanView() {
     console.log("New Loan Officer:", newLoanOfficer);
 
     if (newLoanOfficer) {
-      setLoanOfficer(newLoanOfficer);
+      setLoanApp((prevLoanApp) => ({
+        ...prevLoanApp,
+        loanOfficer: newLoanOfficer,
+      }));
     } else {
       console.error("Could not set new loan officer");
     }
@@ -93,7 +74,10 @@ function LoanView() {
     console.log("New Real Estate Agent:", newRealEstateAgent);
 
     if (newRealEstateAgent) {
-      setRealEstateAgent(newRealEstateAgent);
+      setLoanApp((prevLoanApp) => ({
+        ...prevLoanApp,
+        realEstateAgent: newRealEstateAgent,
+      }));
     } else {
       console.error("Could not set new real estate agent");
     }
@@ -114,7 +98,7 @@ function LoanView() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        loan_officer_id: loanOfficer.id,
+        loan_officer_id: loanApp.loanOfficer.id,
       }),
     })
       .then((response) => {
@@ -139,7 +123,7 @@ function LoanView() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        real_estate_agent_id: realEstateAgent.id,
+        real_estate_agent_id: loanApp.realEstateAgent.id,
       }),
     })
       .then((response) => {
@@ -186,9 +170,9 @@ function LoanView() {
     <div className="loan-view-container p-8 flex flex-col items-center justify-center">
       <div className="loan-view space-y-4 w-full max-w-3xl">
         <h2 className="text-2xl font-bold">Contact Information</h2>
-        <p>Name: {loanApp.borrower.name}</p>
-        <p>Email: {loanApp.borrower.email}</p>
-        <p>Phone Number: {loanApp.borrower.phone_number}</p>
+        <p>Name: {loanApp.borrower?.name}</p>
+        <p>Email: {loanApp.borrower?.email}</p>
+        <p>Phone Number: {loanApp.borrower?.phone_number}</p>
         <p>Property Address: {loanApp.property_address}</p>
         <div className="flex justify-between items-center">
           <input
@@ -204,7 +188,7 @@ function LoanView() {
             Update Property Address
           </Button>
         </div>
-        <p>Loan Officer Name: {loanOfficer?.name}</p>
+        <p>Loan Officer Name: {loanApp.loanOfficer?.name}</p>
         <div className="flex justify-between items-center">
           <UserDropdown
             role="loan officer"
@@ -219,7 +203,7 @@ function LoanView() {
             Update Assigned LO
           </Button>
         </div>
-        <p>Real Estate Agent Name: {realEstateAgent?.name}</p>
+        <p>Real Estate Agent Name: {loanApp.realEstateAgent?.name}</p>
         <div className="flex justify-between items-center">
           <UserDropdown
             role="real estate agent"

@@ -13,7 +13,6 @@ import {
   Drawer,
   DrawerClose,
   DrawerContent,
-  DrawerDescription,
   DrawerFooter,
   DrawerHeader,
   DrawerTitle,
@@ -124,6 +123,10 @@ function AllTasks() {
       })
       .catch((error) => console.error("Error:", error));
   };
+
+  if (isLoading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <div className="all-tasks-container p-8">
