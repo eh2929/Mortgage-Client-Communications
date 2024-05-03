@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 
-import os 
-from flask import Flask, abort, jsonify, make_response, request, session
+import os
+from flask import make_response, request, session
 from flask_restful import Api, Resource
-from flask_migrate import Migrate
-from flask_login import current_user, LoginManager
+from flask_login import LoginManager
 from sqlalchemy.orm import joinedload
 from models import User, Loan_Application, Task, Assigned_Task, Comment
-from werkzeug.exceptions import NotFound, Unauthorized
+from werkzeug.exceptions import Unauthorized
 
 
 from config import app, db, api
