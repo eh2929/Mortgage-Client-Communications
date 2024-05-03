@@ -21,10 +21,10 @@ function LoanView() {
   useEffect(() => {
     // Fetch all loan officers, real estate agents, and borrowers
     Promise.all([
-      fetch(`http://127.0.0.1:5555/users?role=loan officer`),
-      fetch(`http://127.0.0.1:5555/users?role=real estate agent`),
-      fetch(`http://127.0.0.1:5555/users?role=borrower`),
-      fetch(`http://127.0.0.1:5555/loan_applications/${id}`),
+      fetch(`http://127.0.0.1:5000/users?role=loan officer`),
+      fetch(`http://127.0.0.1:5000/users?role=real estate agent`),
+      fetch(`http://127.0.0.1:5000/users?role=borrower`),
+      fetch(`http://127.0.0.1:5000/loan_applications/${id}`),
     ])
       .then((responses) => Promise.all(responses.map((res) => res.json())))
       .then(
@@ -92,7 +92,7 @@ function LoanView() {
   }
 
   const updateLoanOfficer = () => {
-    fetch(`http://127.0.0.1:5555/loan_applications/${id}`, {
+    fetch(`http://127.0.0.1:5000/loan_applications/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -117,7 +117,7 @@ function LoanView() {
   };
 
   const updateRealEstateAgent = () => {
-    fetch(`http://127.0.0.1:5555/loan_applications/${id}`, {
+    fetch(`http://127.0.0.1:5000/loan_applications/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -142,7 +142,7 @@ function LoanView() {
   };
 
   const updatePropertyAddress = () => {
-    fetch(`http://127.0.0.1:5555/loan_applications/${id}`, {
+    fetch(`http://127.0.0.1:5000/loan_applications/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",

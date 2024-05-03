@@ -30,11 +30,11 @@ function AllTasks() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://127.0.0.1:5555/tasks")
+    fetch("http://127.0.0.1:5000/tasks")
       .then((response) => response.json())
       .then((data) => setTasks(data));
 
-    fetch("http://127.0.0.1:5555/loan_applications")
+    fetch("http://127.0.0.1:5000/loan_applications")
       .then((response) => response.json())
       .then((data) => setLoanApps(data));
   }, []);
@@ -54,7 +54,7 @@ function AllTasks() {
   };
 
   const createTask = () => {
-    fetch("http://127.0.0.1:5555/tasks", {
+    fetch("http://127.0.0.1:5000/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newTask),
@@ -69,7 +69,7 @@ function AllTasks() {
   };
 
   const updateTask = (id, updatedTask) => {
-    fetch(`http://127.0.0.1:5555/tasks/${id}`, {
+    fetch(`http://127.0.0.1:5000/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(updatedTask),
@@ -82,7 +82,7 @@ function AllTasks() {
   };
 
   const deleteTask = (id) => {
-    fetch(`http://127.0.0.1:5555/tasks/${id}`, {
+    fetch(`http://127.0.0.1:5000/tasks/${id}`, {
       method: "DELETE",
     })
       .then(() => setTasks(tasks.filter((task) => task.id !== id)))
@@ -102,7 +102,7 @@ function AllTasks() {
       return;
     }
 
-    fetch("http://127.0.0.1:5555/assigned_tasks", {
+    fetch("http://127.0.0.1:5000/assigned_tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({

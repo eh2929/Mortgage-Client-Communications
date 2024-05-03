@@ -30,7 +30,7 @@ function UserProfile() {
   };
 
   const handleSaveClick = () => {
-    fetch(`http://127.0.0.1:5555/users/${user.id}`, {
+    fetch(`http://127.0.0.1:5000/users/${user.id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -54,7 +54,7 @@ function UserProfile() {
 
   const handleDeleteClick = () => {
     if (window.confirm("Are you sure you want to delete your account?")) {
-      fetch(`http://127.0.0.1:5555/users/${user.id}`, {
+      fetch(`http://127.0.0.1:5000/users/${user.id}`, {
         method: "DELETE",
       })
         .then((response) => response.json())

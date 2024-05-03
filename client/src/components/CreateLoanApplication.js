@@ -36,7 +36,7 @@ function CreateLoanApplication({
 
     console.log("borrowerId:", borrowerId);
     console.log("propertyAddress:", propertyAddress);
-    fetch("http://127.0.0.1:5555/loan_applications", {
+    fetch("http://127.0.0.1:5000/loan_applications", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -49,7 +49,7 @@ function CreateLoanApplication({
       .then((response) => response.json())
       .then((data) => {
         // After the loan application is created, get the user's name
-        fetch(`http://127.0.0.1:5555/users/${borrowerId}`)
+        fetch(`http://127.0.0.1:5000/users/${borrowerId}`)
           .then((response) => {
             if (!response.ok) {
               throw new Error("Network response was not ok");

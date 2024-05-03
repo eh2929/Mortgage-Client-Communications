@@ -8,7 +8,7 @@ function Comments({ comments, loanApplicationId }) {
   const [editedCommentText, setEditedCommentText] = useState("");
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5555/comments?loanId=${loanApplicationId}`)
+    fetch(`http://127.0.0.1:5000/comments?loanId=${loanApplicationId}`)
       .then((response) => response.json())
       .then((data) => setAllComments(data));
   }, [loanApplicationId]);
@@ -16,7 +16,7 @@ function Comments({ comments, loanApplicationId }) {
   const userId = localStorage.getItem("userId");
 
   const handleAddComment = (loanApplicationId) => {
-    fetch("http://127.0.0.1:5555/comments", {
+    fetch("http://127.0.0.1:5000/comments", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -43,7 +43,7 @@ function Comments({ comments, loanApplicationId }) {
   };
 
   const submitEdit = (id) => {
-    fetch(`http://127.0.0.1:5555/comments/${id}`, {
+    fetch(`http://127.0.0.1:5000/comments/${id}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -66,7 +66,7 @@ function Comments({ comments, loanApplicationId }) {
 
   const startDeleting = (id) => {
     if (window.confirm("Are you sure you want to delete this comment?")) {
-      fetch(`http://127.0.0.1:5555/comments/${id}`, {
+      fetch(`http://127.0.0.1:5000/comments/${id}`, {
         method: "DELETE",
       })
         .then((response) => response.json())

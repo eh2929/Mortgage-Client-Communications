@@ -27,7 +27,7 @@ function LoanApps() {
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   const fetchLoanApps = () => {
-    fetch("http://127.0.0.1:5555/loan_applications")
+    fetch("http://127.0.0.1:5000/loan_applications")
       .then((response) => response.json())
       .then((data) => {
         console.log("Loan Applications Data", data);

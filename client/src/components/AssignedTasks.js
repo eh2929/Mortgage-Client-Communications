@@ -7,7 +7,7 @@ function AssignedTasks({ loanId }) {
   const [successMessage, setSuccessMessage] = useState(null);
 
   useEffect(() => {
-    fetch(`http://127.0.0.1:5555/assigned_tasks?loanId=${loanId}`)
+    fetch(`http://127.0.0.1:5000/assigned_tasks?loanId=${loanId}`)
       .then((response) => response.json())
       .then((data) => {
         setAssignedTasks(data);
@@ -16,7 +16,7 @@ function AssignedTasks({ loanId }) {
   }, [loanId]);
 
   const completeTask = (taskId) => {
-    fetch(`http://127.0.0.1:5555/assigned_tasks/${taskId}`, {
+    fetch(`http://127.0.0.1:5000/assigned_tasks/${taskId}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
@@ -34,7 +34,7 @@ function AssignedTasks({ loanId }) {
   };
 
   const removeTask = (taskId) => {
-    fetch(`http://127.0.0.1:5555/assigned_tasks/${taskId}`, {
+    fetch(`http://127.0.0.1:5000/assigned_tasks/${taskId}`, {
       method: "DELETE",
     }).then(() => {
       // Optimistically update the assignedTasks state
