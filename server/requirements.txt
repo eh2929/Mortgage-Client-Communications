@@ -18,7 +18,7 @@ Flask-Migrate==4.0.5
 Flask-RESTful==0.3.10
 Flask-SQLAlchemy==3.0.3
 greenlet==3.0.3
-importlib-metadata==7.0.1
+importlib-metadata==6.7.0
 importlib_resources==6.1.2
 iniconfig==2.0.0
 ipdb==0.13.9
