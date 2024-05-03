@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import os 
 from flask import Flask, abort, jsonify, make_response, request, session
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
@@ -454,4 +455,4 @@ def create_admin_command():
 
 
 if __name__ == "__main__":
-    app.run(port=5555, debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
